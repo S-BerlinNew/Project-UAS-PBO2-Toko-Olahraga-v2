@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Toko Olahraga</title>
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+
+<div class="dashboard-wrapper">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside th:replace="~{fragments/sidebar :: sidebar-fragments}"></aside>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+        <p>Selamat datang, <b th:text="${session.loggedInUser}"></b></p>
+
+    </main>
+
+</div>
+
+</body>
+</html>

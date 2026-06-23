@@ -1,0 +1,410 @@
+@import url('variable.css');
+
+* {
+    box-sizing: border-box; /* padding doesn't add to element width */
+    margin: 0;
+    padding: 0;
+}
+
+.dashboard-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: var(--color-primary);
+    display: flex;
+    flex-direction: column;
+    padding: 24px 0 16px;
+}
+
+.sidebar-brand {
+    text-align: center;
+    color: var(--color-text-2);
+    font-size: 20px;
+    font-weight: bold;
+    padding: 0 16px 20px;
+    line-height: 1.4;
+}
+
+
+/* ========AVATAR/PROFILE===== */
+.avatar-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding-bottom: 24px;
+}
+
+.avatar-circle {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--color-bg);
+}
+
+.avatar-name {
+    color: var(--color-text-2);
+    font-size: 17px;
+}
+
+
+/* =======NAVIGASI MENU======= */
+.nav-menu {
+    list-style:none;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.nav-menu li a {
+    display: block;
+    padding: 10px 24px;
+    color: var(--color-text-2);
+    text-decoration: none;
+    font-size: 15px;
+}
+
+.nav-menu li a:hover,
+.nav-menu li.active a {
+    background: rgba(0, 0, 0, 0.12);
+}
+
+
+/* =======LOGOUT======= */
+.sidebar-footer {
+    margin-top: auto;
+}
+
+.logout-btn {
+    width: 100%;
+    display: block;
+    align-items: center;
+    background: var(--color-btn1);
+    border: none;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 14px 20px;
+    color: white;
+}
+
+.sidebar-footer .logout-btn:hover {
+    color: white;
+    background: var(--color-danger);
+}
+
+
+
+
+/* ========MAIN CONTENT- HEADER ========= */
+.main-content {
+    flex: 1;           
+    padding: 24px 28px;
+    background: var(--color-bg);
+}
+
+.main-header h2 {
+    color: var(--color-text-1);
+}
+
+.main-header a {
+    text-decoration: none;
+    padding: 10px 22px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 8px;
+    background-color: var(--color-btn2);
+    color: var(--color-text-3);
+    box-shadow: 0 4px 6px rgba(220, 179, 134, 1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.main-header a:hover {
+    background-color: var(--color-btnhover);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(220, 179, 134, 1.5);
+}
+
+
+
+
+
+/* ===========MAIN CCONTENT - TABEL DATA========== */
+.main-data {
+    width: 100%;
+    overflow-x: auto; 
+    margin: 20px 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    background-color: var(--color-tabel2);
+    border-radius: 8px; 
+}
+
+.main-data table {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--color-text-3);
+    font-size: 14px;
+}
+
+.main-data thead tr {
+    background-color: var(--color-tabel1);
+    color: var(--color-text-2);
+    text-align: left;
+}
+
+.main-data th, 
+.main-data td {
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    border: 1.5px solid var(--color-tabel1);
+}
+
+
+.main-data tbody tr:hover {
+    background-color: rgba(214, 175, 55, 0.08);
+    transition: background-color 0.15s ease;
+}
+
+.main-data td a {
+    display: inline-block;
+    padding: 6px 14px;
+    margin-right: 6px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+/* EDIT DAN HAPUS - TERMASUK ROLE */
+.main-data td a[href*="edit"] {
+    background-color: var(--color-btn1);
+    color: #ffffff;
+}
+
+.main-data td a[href*="edit"]:hover {
+    background-color: var(--color-primary2);
+}
+
+.main-data td a[href*="hapus"] {
+    background-color: var(--color-danger);
+    color: #ffffff;
+}
+
+.main-data td a[href*="hapus"]:hover {
+    opacity: 0.85;
+}
+
+.main-data .empty-msg {
+    text-align: center;
+    color: var(--color-danger);
+    font-weight: bold;
+    padding: 25px !important;
+}
+
+
+
+
+
+/* =============== KASIR - PENJUALAN.JAVA ================*/
+/* pembungkus kasir */
+.kasir {
+    width: 100%;;
+    margin: 0 auto;
+}
+
+/* wrapper kasir */
+.kasir-wrapper {
+    background: var(--color-primary1);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Header - Kasir */
+.head-kasir {
+    background: var(--color-primary1);
+    color: var(--color-text-1);
+    padding: 15px 20px;
+}
+
+/* Column 1 - KKasir */
+.column-1 {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: stretch;
+    gap: 15px;
+}
+
+.column-1 .info-user,
+.column-1 .info-member,
+.column-1 .total-box {
+    flex: 1;
+    margin: 0 !important;
+    padding: 15px;
+    border: 2px solid var(--color-primary2);
+    border-radius: 5px;
+    box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.info-member button {
+    margin-top: 10px;
+    margin-right: 8px;
+    padding: 6px 12px;
+    border: 1px solid var(--color-btn1);
+    background: var(--color-primary2);
+    color: var(--color-text-2);
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.5s;
+}
+
+.info-member button:hover {
+    background: var(--color-primary1);
+    color: var(--color-text2);
+}
+
+.column-1 .total-box {
+    background: var(--color-primary2) !important;
+}
+
+
+/* Column 2 - Kasir */
+.column-2 {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background: var(--color-primary1);
+    border: 2px solid var(--color-primary2);
+    border-radius: 5px;
+    padding: 15px;
+    box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.3);
+}
+
+.keranjang table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 2px solid var(--color-primary2);
+}
+
+.keranjang th {
+    background: var(--color-tabel1);
+    color: var(--color-text-2);
+    padding: 10px;
+}
+
+.keranjang td {
+    padding: 10px;
+}
+
+.btn-aksi {
+    gap: 10px;
+    display: flex;
+    flex-direction: row;
+}
+
+.btn-aksi button {
+    flex: 1;               
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 20px 0 !important; 
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Pembayaran - Kasir */
+.metode-pembayaran {
+    border-top: 2px solid var(--color-tabel1);
+    border-left: none !important; 
+    padding-top: 20px !important;
+    width: 100%;
+    
+}
+
+.metode-pembayaran h3 {
+    padding: 20px;
+}
+
+#formTransaksi {
+    display: flex;
+    flex-direction: row; 
+    align-items: flex-end; 
+    gap: 15px;
+    width: 100%;
+    padding: 20px;
+}
+
+#formTransaksi > div {
+    flex: 1; 
+    margin-bottom: 0 !important; 
+}
+
+#formTransaksi select, 
+#formTransaksi input[type="number"] {
+    width: 100% !important;
+    border: 2px solid var(--color-tabel1);
+    border-radius: 4px;
+    box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.3);
+}
+
+#formTransaksi button[type="submit"] {
+    flex: 1.2;
+    height: 40px; 
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.3);
+    background: var(--color-btn1);
+    color: var(--color-text-2);
+}
+
+
+
+/* ==================== CSS MODAL TRANSAKSI KASIR ==================== */
+
+/* Ini untuk latar belakang hitam transparan (backdrop) yang menutupi seluruh layar */
+.modal-overlay {
+    display: none; 
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); 
+    justify-content: center;
+    align-items: center;
+}
+
+/* Ini untuk kotak putih isi modalnya */
+.modal-content {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+}
+
+/* Custom lebar khusus modal cari member biar muat tabelnya */
+.modal-lebar-member {
+    width: 450px;
+    max-height: 85vh;
+    overflow-y: auto; 
+}
+
+/* // Custom lebar khusus modal tambah member baru */
+.modal-lebar-tambah {
+    width: 350px;
+}

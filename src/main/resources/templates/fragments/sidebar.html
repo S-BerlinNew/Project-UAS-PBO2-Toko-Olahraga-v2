@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+    <aside th:fragment="sidebar-fragments" class="sidebar">
+        <!-- LOGO - SIDEBAR -->
+        <div class="sidebar-brand">
+            Toko Olahraga<br>Amatir
+        </div>
+
+
+        <!-- PROFILE - SIDEBAR -->
+        <div class="avatar-wrap">
+            <div class="avatar-circle"></div>
+            <span class="avatar-name" th:text="${session.loggedInUser}"></span>
+        </div>
+
+        <!-- MENU - SIDEBAR -->
+        <div class="nav-menu">
+            <ul>
+                <li><a th:href="@{/dashboard}">Dashboard</a></li>
+                <li th:if="${session.role == 'ADMIN'}"><a th:href="@{/barang}">Barang</a></li>
+                <li><a th:href="@{/customer}">Customer</a></li>
+                <li><a th:href="@{/penjualan}">Penjualan</a></li>
+                <li th:if="${session.role == 'ADMIN'}"><a th:href="@{/kelola-akun}">Kelola Akun</a></li>
+                <li th:if="${session.role == 'ADMIN'}"><a th:href="@{/laporan}">Laporan</a></li>
+            </ul>
+        </div>
+
+        <!-- FOOTER -SIDEBAR -->
+        <div class="sidebar-footer">
+            <form th:action="@{/logout}" method="get">
+                <button type="submit" class="logout-btn">Log Out</button>
+            </form>
+        </div>
+    </aside>
+</body>
+</html>

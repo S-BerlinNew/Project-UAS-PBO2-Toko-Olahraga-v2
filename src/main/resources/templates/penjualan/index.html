@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Kasir - Toko Olahraga v2</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+    <div class="kasir">
+        <div class="kasir-wrapper">
+            <div class="head-kasir">
+                <div style="display: flex; justify-content: space-between; width: 100%;">
+                    <div><b>🏀 TOKO OLAHRAGA V2</b></div>
+                    <div><a th:href="@{/dashboard}" style="color: red; text-decoration: none; font-weight: bold;">Exit</a></div>
+                </div>
+            </div>
+
+            <div class="column-1">
+                <div class="info-user">
+                    <p>Kasir: <b th:text="${session.loggedInUser != null ? session.loggedInUser : 'Admin'}"></b></p>
+                </div>
+
+                <div class="info-member">
+                    <div id="sectionNonMember">
+                        <p>MEMBER : <span id="namaMemberPilihan">Umum (Non-Member)</span></p>
+                    </div>
+
+                    <div id="sectionMember" style="display:none;">
+                        <p style="margin-bottom: 5px;">MEMBER : 
+                            <span style="color: #0284c7; font-weight: bold;">Member Aktif</span>
+                        </p>
+                        <table style="width:100%; font-size:13px; color:#334155;
+                                    background:#fff; border:1px dashed #cbd5e1;
+                                    padding:8px; border-radius:4px;">
+                            <tr>
+                                <td style="padding: 2px 0;">Nama</td>
+                                <td>: <b id="txtNamaCustomer"></b></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 2px 0;">No. Telp</td>
+                                <td>: <span id="txtNoTelepon"></span></td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <button type="button" id="btnTambahMember">TAMBAH MEMBER</button>
+                    <button type="button" id="btnCariMember">CARI MEMBER</button>
+                    <button type="button" id="btnResetMember" style="background: #ef4444; color: white; display: none;">HAPUS MEMBER</button>
+                </div>
+
+                <div class="total-box" style="background: #222; color: #fff; padding: 15px; margin-top: 20px;">
+                    <p style="margin: 0; font-size: 14px; color: #aaa;">TOTAL BAYAR :</p>
+                    <h1 style="margin: 5px 0 0 0; color: #00ff00;">RP <span id="displayTotalBayar">0</span></h1>
+                </div>
+             </div>
+
+             <div class="column-2">
+                <input type="hidden" id="jsonKeranjang" name="jsonKeranjang" value="[]">
+
+                <div class="input-transaksi">
+                    <input type="text" id="inputKodeBarang" placeholder="Ketik kode barang...">
+                    <button type="button" onclick="tambahBarangByKode()">Tambah</button>
+                </div>
+
+                <div class="keranjang">
+                    <table border="1" style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th>Nama Barang</th>
+                                <th>Harga</th>
+                                <th>Qty</th>
+                                <th>Brand</th>
+                                <th>Diskon (%)</th>
+                                <th>Subtotal</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelKeranjang">
+                            <tr id="rowKosong">
+                                <td colspan="7" style="text-align: center; color: #999; padding: 20px;">Keranjang masih kosong. Ketik Kode Barang!</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="dataMasterBarangTersembunyi" style="display: none;">
+                <table>
+                    <tr th:each="b : ${listBarang}" 
+                        th:data-id="${b.idBarang}"
+                        th:data-kode="${b.kodeBarang}"
+                        th:data-nama="${b.namaBarang}"
+                        th:data-harga="${b.hargaJual}"
+                        th:data-brand="${b.brand}"
+                        th:data-stok="${b.stok}">
+                    </tr>
+                </table>
+            </div>
+            </div>
+            </div>
+
+               <div class="metode-pembayaran" style="padding: 20px; border-left: 2px solid #ccc;">
+                <h3>💳 PENYELESAIAN TRANSAKSI</h3>
+                <hr>
+                
+                <form th:action="@{/penjualan/bayar}" method="POST" id="formTransaksi">
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-weight: bold;">Metode Pembayaran:</label><br>
+                        <select name="metodePembayaran" style="width:100%; padding:8px; margin-top:5px;">
+                            <option value="TUNAI">TUNAI (CASH)</option>
+                            <option value="QRIS">QRIS / DEBIT</option>
+                            <option value="TRANSFER">TRANSFER BANK</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom: 15px;">
+                        <label style="font-weight: bold;">Uang Tunai Diterima (Rp):</label><br>
+                        <input type="number" id="jumlahBayar" name="jumlahBayar"
+                            placeholder="Kosongkan jika non-tunai"
+                            style="width:95%; padding:8px; margin-top:5px; font-size:16px; font-weight:bold;">
+                    </div>
+
+                    <input type="hidden" id="idCustomerTerpilih" name="customer" value=""/>
+                    <input type="hidden" id="jsonKeranjang" name="jsonKeranjang"/>
+
+                    <button type="submit">👉 LANJUTKAN PEMBAYARAN</button>
+                </form>
+            </div>
+         </div>
+    </div>
+
+
+    <!-- ============================BAGIAN SEMUA MODAL ======================-->
+
+    <!-- -------------- MODAL - CUSTOMER ------------------ -->
+    <!-- ----------MODAL - CARI MEMBER--------- -->
+    <div id="modalCariMember" class="modal-overlay">
+        <div class="modal-content modal-lebar-member">
+            <h3 style="margin-top: 0;">🔍 Cari Member</h3>
+            <input id="inputanCariMember" type="text" placeholder="Ketik nama member..." onkeyup="filterMemberLokal()" style="width: 100%; padding: 8px; margin-bottom: 15px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;"/>
+                        
+            <div style="margin-bottom: 15px;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #f1f5f9; border-bottom: 2px solid #e2e8f0;">
+                            <th style="padding: 10px; text-align: left;">Nama</th>
+                            <th style="padding: 10px; text-align: left;">Telepon</th>
+                            <th style="padding: 10px; text-align: center;">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelHasilCari">
+                        <tr th:each="c : ${listCustomer}"
+                            th:data-id="${c.idCustomer}"
+                            th:data-nama="${c.namaCustomer}"
+                            th:data-telepon="${c.noTelepon}"> <td th:text="${c.namaCustomer}"></td>
+                            <td th:text="${c.noTelepon}"></td>
+                            <td style="padding: 10px; text-align: center;">
+                                <button type="button" class="btnPilihMember">Pilih</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <button id="btnTutupModalCari" type="button" style="width: 100%; padding: 10px; background: #64748b; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
+                Tutup
+            </button>
+        </div>
+    </div>
+    <!-- --------MODAL - TAMBAH MEMBER-------- -->
+    <div id="modalTambahMember" class="modal-overlay">
+        <div class="modal-content modal-lebar-tambah">
+            <h3 style="margin-top: 0;">➕ Daftar Member Baru</h3>
+            
+            <label style="font-weight: bold; display: block; margin-bottom: 5px;">Nama Member:</label>
+            <input id="inputNamaBaru" type="text" placeholder="Nama lengkap..." style="width: 100%; padding: 8px; margin-bottom: 15px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;"/>
+            
+            <label style="font-weight: bold; display: block; margin-bottom: 5px;">No. Telepon:</label>
+            <input id="inputTelpBaru" type="text" placeholder="08xx-xxxx-xxxx" style="width: 100%; padding: 8px; margin-bottom: 20px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;"/>
+            
+            <div style="display: flex; gap: 10px;">
+                <button id="btnSimpanMemberBaru" type="button" style="flex: 1; padding: 10px; background: #22c55e; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
+                    Simpan
+                </button>
+                <button id="btnTutupModalTambah" type="button" style="flex: 1; padding: 10px; background: #ef4444; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
+                    Batal
+                </button>
+            </div>
+        </div>
+    </div>
+    <script th:src="@{/js/penjualan.js}"></script>
+</body>
+</html>

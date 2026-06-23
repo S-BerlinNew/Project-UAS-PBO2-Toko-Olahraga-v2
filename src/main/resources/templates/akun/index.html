@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Kelola Akun - Toko Olahraga</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <!-- ===== SIDEBAR ===== -->
+        <aside th:replace="~{fragments/sidebar :: sidebar-fragments}"></aside>
+
+        <!-- ======MAIN CONTENT======= -->
+        <main class="main-content">
+            
+            <div class="main-header">
+                <h2>Data Akun Pegawai</h2>
+                <br>
+                <a th:href="@{/kelola-akun/tambah}">+ Tambah Akun Baru</a>
+            </div>
+            <br><br>
+
+            <div class="main-data">
+                <table border="1" style="border-collapse: collapse; width: 100%; text-align: left;">
+                    <thead>
+                        <tr>
+                            <th>ID Akun</th>
+                            <th>Username</th>
+                            <th>Nama Lengkap</th>
+                            <th>Role / Jabatan</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="a : ${listAkun}">
+                            <td th:text="${a.idAkun}"></td>
+                            <td th:text="${a.username}"></td>
+                            <td th:text="${a.namaLengkap}"></td>
+                            <td style="padding: 10px;">
+                                <span th:text="${a.role}"></span>
+                            </td>
+                            <td>
+                                <a th:href="@{/kelola-akun/edit/{id}(id=${a.idAkun})}">Edit</a> 
+                                <a th:href="@{/kelola-akun/hapus/{id}(id=${a.idAkun})}" 
+                                   onclick="return confirm('Yakin ingin menghapus akun pegawai ini, bri?')">Hapus</a>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(listAkun)}">
+                            <td>Belum ada data akun pegawai!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div th:if="${mode != null}">
+                <div>
+                    <h3 th:text="${mode == 'tambah' ? 'Form Tambah Akun' : 'Form Edit Akun'}">Form Akun</h3>
+                </div>
+
+                <div>
+                    <form th:action="@{/kelola-akun/simpan}" th:object="${akun}" method="POST">
+                        
+                        <input type="hidden" th:if="${mode == 'edit'}" th:field="*{idAkun}" />
+                        
+                        <p>
+                            <label>Username</label>
+                            <input type="text" th:field="*{username}" th:readonly="${mode == 'edit'}" required/>
+                        </p>
+
+                        <p>
+                            <label>Password</label>
+                            <input type="text" th:field="*{password}" required/>
+                        </p>
+
+                        <p>
+                            <label>Nama Lengkap</label>
+                            <input type="text" th:field="*{namaLengkap}" required/>
+                        </p>
+
+                        <p>
+                            <label>Role</label>
+                            <select th:field="*{role}" required style="padding: 4px; width: 180px;">
+                                <option value="ADMIN">ADMIN</option>
+                                <option value="KASIR">KASIR</option>
+                            </select>
+                        </p>
+
+                        <br>
+                        <button type="submit">💾 Simpan Data</button>
+                        <a th:href="@{/kelola-akun}">❌ Batal</a>
+                    </form>
+                </div>
+             </div>
+        </main>
+    </div>
+</body>
+</html>

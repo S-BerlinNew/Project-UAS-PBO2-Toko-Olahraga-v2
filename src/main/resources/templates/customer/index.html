@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Manajemen Customer - Toko Olahraga</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <!-- ===== SIDEBAR ===== -->    
+        <aside th:replace="~{fragments/sidebar :: sidebar-fragments}"></aside>
+
+        <!-- ======MAIN CONTENT========= -->
+        <main class="main-content">
+            <div class="main-header">
+                <h2>Data Customer</h2>
+                <br>
+                <a th:href="@{/customer/tambah}">+ Tambah Customer</a>
+            </div>
+            <br><br>
+
+            <div class="main-data">
+                <table border="1" style="border-collapse: collapse; width: 100%; text-align: left;">
+                    <thead>
+                        <tr>
+                            <th>ID Customer</th>
+                            <th>Kode Customer</th>
+                            <th>Nama Lengkap</th>
+                            <th>Nomor Telepom</th>
+                            <th th:if="${session.role == 'ADMIN'}">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="c :${listCustomer}">
+                            <td th:text="${c.idCustomer}"></td>
+                            <td th:text="${c.kodeCustomer}"></td>
+                            <td th:text="${c.namaCustomer}"></td>
+                            <td th:text="${c.noTelepon}"></td>
+                            <td th:if="${session.role == 'ADMIN'}">
+                                <a th:href="@{/customer/edit/{id}(id=${c.idCustomer})}">Edit</a>
+                                <a th:href="@{/customer/hapus/{id}(id=${c.idCustomer})}" onclick="return confirm('Yakin ingin menghapus customer ini?')">Hapus</a>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(listCustomer)}">
+                            <td colspan="11" style="text-align: center; color: red; padding: 10px;">Belum ada data customer!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- FORM START-->
+            <div th:if="${mode != null}">
+                <div>
+                    <h3 th:text="${mode == 'tambah' ? 'Form Tambah Customer Baru' : 'Form Edit Data Customer'}">Form Customer</h3>
+                </div>
+
+                <div>
+                    <form th:action="${mode == 'tambah' ? '/customer/simpan' : '/customer/update'}" th:object="${customer}" method="POST">
+                        <input type="hidden" th:if="${mode == 'edit'}" th:field="*{idCustomer}" />
+                        <p>
+                            <label>Kode Customer</label>
+                            <input type="text" th:field="*{kodeCustomer}" th:readonly="${mode == 'edit'}" required />
+                        </p>
+
+                        <p>
+                            <label>Nama Lengkap:</label><br>
+                            <input type="text" th:field="*{namaCustomer}" required />
+                        </p>
+
+                        <p>
+                            <label>Nomor Telepon:</label><br>
+                            <input type="number" step="any" th:field="*{noTelepon}" required />
+                        </p>
+
+                        <br>
+                        <button type="submit">💾 Simpan Data</button>
+                        <a th:href="@{/customer}">❌ Batal</a>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
