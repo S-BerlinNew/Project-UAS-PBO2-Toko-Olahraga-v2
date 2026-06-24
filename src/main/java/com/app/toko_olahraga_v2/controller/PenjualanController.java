@@ -3,14 +3,21 @@ package com.app.toko_olahraga_v2.controller;
 import com.app.toko_olahraga_v2.model.Penjualan;
 import com.app.toko_olahraga_v2.model.Customer;
 import com.app.toko_olahraga_v2.model.DetailPenjualan;
+import com.app.toko_olahraga_v2.model.Akun;
+import com.app.toko_olahraga_v2.model.Barang;
 import com.app.toko_olahraga_v2.service.BarangService;
 import com.app.toko_olahraga_v2.service.CustomerService;
 import com.app.toko_olahraga_v2.service.PenjualanService;
+import com.app.toko_olahraga_v2.service.AuthService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +28,13 @@ public class PenjualanController {
     private final PenjualanService penjualanService;
     private final CustomerService customerService;
     private final BarangService barangService;
+    private final AuthService authService;
 
-    public PenjualanController(PenjualanService penjualanService, CustomerService customerService, BarangService barangService) {
+    public PenjualanController(PenjualanService penjualanService, CustomerService customerService, BarangService barangService, AuthService authService) {
         this.penjualanService = penjualanService;
         this.customerService = customerService;
         this.barangService = barangService;
+        this.authService = authService;
     }
 
     // 1. MEMBUKA HALAMAN UTAMA KASIR (Saat pertama kali diklik dari Dashboard)
@@ -86,4 +95,104 @@ public class PenjualanController {
         // Bersihkan halaman dan redirect balik ke halaman kasir polosan
         return "redirect:/penjualan"; 
     }
+
+    // 4. MEMUAT MODAL PEMBAYARAN SECARA DINAMIS VIA AJAX GET
+    @GetMapping("/penjualan/pembayaran")
+    public String showPembayaran(
+            @RequestParam("metode") String metode,
+            @RequestParam(value = "customerId", required = false) Integer customerId,
+            @RequestParam("totalBayar") double totalBayar,
+            @RequestParam("tunaiDiterima") double tunaiDiterima,
+            @RequestParam("idAkun") Integer idAkun,
+            Model model) {
+        
+        model.addAttribute("metode", metode);
+        model.addAttribute("customerId", customerId);
+        model.addAttribute("totalBayar", totalBayar);
+        model.addAttribute("tunaiDiterima", tunaiDiterima);
+        model.addAttribute("idAkun", idAkun);
+        
+        return "fragments/pembayaran";
+    }
+
+    // 5. MENERIMA SUBMIT DATA TRANSAKSI FINAL VIA AJAX POST JSON
+    @PostMapping("/penjualan/simpan-final")
+    @ResponseBody
+    public ResponseEntity<?> simpanFinal(@RequestBody TransactionDto dto) {
+        try {
+            Penjualan penjualan = new Penjualan();
+            
+            // Set Akun Kasir
+            if (dto.idAkun() != null) {
+                Akun akun = authService.getAkunById(dto.idAkun());
+                penjualan.setAkun(akun);
+            }
+            if (penjualan.getAkun() == null) {
+                List<Akun> allAkun = authService.getAll();
+                if (!allAkun.isEmpty()) {
+                    penjualan.setAkun(allAkun.get(0));
+                }
+            }
+            
+            // Set Customer
+            if (dto.customerId() != null) {
+                Customer customer = customerService.getCustomerById(dto.customerId());
+                penjualan.setCustomer(customer);
+            }
+            
+            penjualan.setMetodePembayaran(dto.metodePembayaran());
+            penjualan.setTotalBayar(dto.totalBayar());
+            penjualan.setJumlahBayar(dto.jumlahBayar());
+            penjualan.setUangKembali(dto.uangKembali());
+            
+            // Set Detail Penjualan items
+            List<DetailPenjualan> listKeranjang = new ArrayList<>();
+            if (dto.items() != null) {
+                for (TransactionItemDto itemDto : dto.items()) {
+                    DetailPenjualan detail = new DetailPenjualan();
+                    
+                    Barang barang = new Barang();
+                    barang.setIdBarang(itemDto.idBarang());
+                    detail.setBarang(barang);
+                    
+                    detail.setQty(itemDto.qty());
+                    detail.setJumlah(itemDto.qty()); // Set jumlah = qty untuk menjaga integritas database
+                    
+                    // Diskon disimpan sebagai Rupiah absolut dalam PenjualanService
+                    double diskonRupiah = (itemDto.hargaJual() * itemDto.qty()) * (itemDto.diskonPersen() / 100.0);
+                    detail.setDiskon(diskonRupiah);
+                    detail.setHargaJual(itemDto.hargaJual());
+                    
+                    listKeranjang.add(detail);
+                }
+            }
+            
+            penjualanService.prosesTransaksi(penjualan, listKeranjang);
+            return ResponseEntity.ok("Transaksi berhasil disimpan.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    // Helper records for JSON serialization/deserialization
+    public record TransactionItemDto(
+        int idBarang,
+        String namaBarang,
+        double hargaJual,
+        int qty,
+        String brand,
+        double diskonPersen,
+        double subtotal
+    ) {}
+
+    public record TransactionDto(
+        Integer idAkun,
+        Integer customerId,
+        String metodePembayaran,
+        double totalBayar,
+        double jumlahBayar,
+        double uangKembali,
+        List<TransactionItemDto> items
+    ) {}
 }

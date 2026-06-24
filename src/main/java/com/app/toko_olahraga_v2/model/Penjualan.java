@@ -38,6 +38,9 @@ public class Penjualan {
     @Column(name = "jumlah_bayar")
     private double jumlahBayar; 
 
+    @Column(name = "uang_tunai")
+    private double uangTunai; 
+
     @Column(name = "uang_kembali")
     private double uangKembali; 
 
@@ -120,5 +123,12 @@ public class Penjualan {
     }
     public void setUangKembali(double uangKembali) {
         this.uangKembali = uangKembali;
+    }
+
+    public double getUangTunai() {
+        return uangTunai;
+    }
+    public void setUangTunai(double uangTunai) {
+        this.uangTunai = uangTunai;
     }
 }
