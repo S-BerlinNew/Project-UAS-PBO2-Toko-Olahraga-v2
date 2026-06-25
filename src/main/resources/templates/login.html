@@ -1,49 +1,44 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Login - Toko Olahraga</title>
     <link rel="stylesheet" th:href="@{/css/main.css}">
 </head>
+
 <body>
 
-<div class="login-bg">
-    <div class="login-card">
+    <div class="login-bg">
+        <div class="login-card">
 
-        <h2>Toko Olahraga Amatir</h2>
-        <p class="subtitle">Silakan login untuk melanjutkan</p>
+            <h2>Toko Olahraga Amatir</h2>
+            <p class="subtitle">Silakan login untuk melanjutkan</p>
 
-        <div class="error-msg" th:if="${errorPopUp}" th:text="${errorPopUp}">
-            Username atau password salah!
+            <div class="error-msg" th:if="${errorPopUp}" th:text="${errorPopUp}">
+                Username atau password salah!
+            </div>
+
+            <form th:action="@{/login}" method="post">
+
+                <div class="form-group">
+                    <label for="usernameInput">Username</label>
+                    <input type="text" id="usernameInput" name="username" placeholder="Masukkan username"
+                        autocomplete="username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="passwordInput">Password</label>
+                    <input type="password" id="passwordInput" name="password" placeholder="Masukkan password"
+                        autocomplete="current-password" required>
+                </div>
+
+                <button type="submit" class="btn-login">Login</button>
+            </form>
+
         </div>
-
-        <form th:action="@{/login}" method="post">
-            
-            <div class="form-group">
-                <label for="usernameInput">Username</label>
-                <input type="text" 
-                       id="usernameInput" 
-                       name="username" 
-                       placeholder="Masukkan username" 
-                       autocomplete="username" 
-                       required>
-            </div>
-            
-            <div class="form-group">
-                <label for="passwordInput">Password</label>
-                <input type="password" 
-                       id="passwordInput" 
-                       name="password" 
-                       placeholder="Masukkan password" 
-                       autocomplete="current-password" 
-                       required>
-            </div>
-            
-            <button type="submit" class="btn-login">Login</button>
-        </form>
-
     </div>
-</div>
 
 </body>
+
 </html>

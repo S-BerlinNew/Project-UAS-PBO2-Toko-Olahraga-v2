@@ -1,6 +1,7 @@
 package com.app.toko_olahraga_v2.model;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import jakarta.persistence.*;
 
 @Entity
@@ -43,6 +44,9 @@ public class Penjualan {
 
     @Column(name = "uang_kembali")
     private double uangKembali; 
+
+    @OneToMany(mappedBy = "penjualan", fetch = FetchType.EAGER)
+    private List<DetailPenjualan> detailPenjualan;
 
     // fetching
     public Penjualan() {
@@ -130,5 +134,24 @@ public class Penjualan {
     }
     public void setUangTunai(double uangTunai) {
         this.uangTunai = uangTunai;
+    }
+
+    public List<DetailPenjualan> getDetailPenjualan() {
+        return detailPenjualan;
+    }
+    public void setDetailPenjualan(List<DetailPenjualan> detailPenjualan) {
+        this.detailPenjualan = detailPenjualan;
+    }
+
+    public double getKeuntungan() {
+        if (detailPenjualan == null) return 0;
+        double totalKeuntungan = 0;
+        for (DetailPenjualan detail : detailPenjualan) {
+            if (detail.getBarang() != null) {
+                double modal = detail.getBarang().getHargaModal() * detail.getQty();
+                totalKeuntungan += (detail.getSubtotal() - modal);
+            }
+        }
+        return totalKeuntungan;
     }
 }
