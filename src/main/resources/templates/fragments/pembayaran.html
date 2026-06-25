@@ -1,21 +1,25 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Konfirmasi Pembayaran Kasir</title>
 </head>
+
 <body>
 
-    <div th:fragment="modalPembayaran" id="modalOverlayPembayaran" 
-         style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 9999;">
-        
-        <div style="max-width: 500px; width: 100%; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); box-sizing: border-box; font-family: sans-serif;">
-            
+    <div th:fragment="modalPembayaran" id="modalOverlayPembayaran"
+        style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 9999;">
+
+        <div
+            style="max-width: 500px; width: 100%; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); box-sizing: border-box; font-family: sans-serif;">
+
             <h2>🛡️ KONFIRMASI TRANSAKSI FINAL</h2>
             <p style="color: #666;">Silakan periksa kembali nominal sebelum disimpan ke database.</p>
             <hr style="border: 1px dashed #ccc; margin: 20px 0;">
 
-            <div id="divTunai" class="opsi-div-modal" style="border: 2px solid green; padding: 20px; background: #f0fff0; border-radius: 5px; display: none;">
+            <div id="divTunai" class="opsi-div-modal"
+                style="border: 2px solid green; padding: 20px; background: #f0fff0; border-radius: 5px; display: none;">
                 <h3 style="color: green; margin-top: 0;">💵 PEMBAYARAN TUNAI (CASH)</h3>
                 <table style="width: 100%; font-size: 16px;">
                     <tr>
@@ -33,28 +37,35 @@
                 </table>
             </div>
 
-            <div id="divQris" class="opsi-div-modal" style="border: 2px solid #0056b3; padding: 20px; background: #f0f5ff; border-radius: 5px; display: none;">
+            <div id="divQris" class="opsi-div-modal"
+                style="border: 2px solid #0056b3; padding: 20px; background: #f0f5ff; border-radius: 5px; display: none;">
                 <h3 style="color: #0056b3; margin-top: 0;">📱 PEMBAYARAN VIA QRIS / DEBIT</h3>
-                <p style="font-size: 18px; font-weight: bold;">Total Tagihan: Rp <span class="mdlTotalNonTunai">0</span></p>
-                <div style="background: #fff9db; padding: 10px; border: 1px solid #f59f00; font-weight: bold; text-align: center; color: #b57c1e; font-size: 13px;">
+                <p style="font-size: 18px; font-weight: bold;">Total Tagihan: Rp <span class="mdlTotalNonTunai">0</span>
+                </p>
+                <div
+                    style="background: #fff9db; padding: 10px; border: 1px solid #f59f00; font-weight: bold; text-align: center; color: #b57c1e; font-size: 13px;">
                     ⏳ MENUNGGU PROSES SCAN SELESAI...
                 </div>
             </div>
 
-            <div id="divTransfer" class="opsi-div-modal" style="border: 2px solid orange; padding: 20px; background: #fffaf0; border-radius: 5px; display: none;">
+            <div id="divTransfer" class="opsi-div-modal"
+                style="border: 2px solid orange; padding: 20px; background: #fffaf0; border-radius: 5px; display: none;">
                 <h3 style="color: orange; margin-top: 0;">🏦 PEMBAYARAN TRANSFER BANK</h3>
-                <p style="font-size: 18px; font-weight: bold;">Total Tagihan: Rp <span class="mdlTotalNonTunai">0</span></p>
-                <div style="background: #ffe0b2; padding: 10px; border: 1px solid #b57c1e; font-weight: bold; text-align: center; color: #b57c1e; font-size: 13px;">
+                <p style="font-size: 18px; font-weight: bold;">Total Tagihan: Rp <span class="mdlTotalNonTunai">0</span>
+                </p>
+                <div
+                    style="background: #ffe0b2; padding: 10px; border: 1px solid #b57c1e; font-weight: bold; text-align: center; color: #b57c1e; font-size: 13px;">
                     ⏳ HARAP KASIR CEK MUTASI SECARA MANUAL...
                 </div>
             </div>
 
-            <button type="button" id="btnSimpanFinalKeDatabase" style="width: 100%; padding: 12px; background: #22c55e; color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 20px; border-radius: 4px; font-size: 15px;">
+            <button type="button" id="btnSimpanFinalKeDatabase"
+                style="width: 100%; padding: 12px; background: #22c55e; color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 20px; border-radius: 4px; font-size: 15px;">
                 ✅ PEMBAYARAN SELESAI & SIMPAN KE DATABASE
             </button>
 
-            <button type="button" onclick="document.getElementById('modalOverlayPembayaran').style.display='none'" 
-                    style="width: 100%; padding: 10px; background: #ef4444; color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; border-radius: 4px;">
+            <button type="button" onclick="document.getElementById('modalOverlayPembayaran').style.display='none'"
+                style="width: 100%; padding: 10px; background: #ef4444; color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; border-radius: 4px;">
                 ❌ BATAL
             </button>
         </div>
@@ -62,7 +73,7 @@
 
     <script th:inline="javascript">
         /*<![CDATA[*/
-        (function() {
+        (function () {
             // 1. Ambil semua parameter kiriman dari Thymeleaf
             const metode = /*[[${metode}]]*/ 'TUNAI';
             const customerId = /*[[${customerId}]]*/ null;
@@ -86,7 +97,7 @@
             }
 
             // 4. PROSES PENYIMPANAN RANGKUMAN UTUH MASSAL
-            document.getElementById("btnSimpanFinalKeDatabase").addEventListener("click", function() {
+            document.getElementById("btnSimpanFinalKeDatabase").addEventListener("click", function () {
                 if (keranjangData.length === 0) {
                     alert("Aksi ditolak! Data item belanja tidak ditemukan.");
                     return;
@@ -118,21 +129,22 @@
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payloadFinal)
                 })
-                .then(res => {
-                    if (res.ok) {
-                        alert("🎉 Transaksi Berhasil Disimpan ke Database!");
-                        sessionStorage.removeItem("keranjangBelanja");
-                        window.location.href = "/penjualan";
-                    } else {
-                        return res.text().then(text => { throw new Error(text) });
-                    }
-                })
-                .catch(err => {
-                    alert("Gagal menyimpan transaksi: " + err.message);
-                });
+                    .then(res => {
+                        if (res.ok) {
+                            alert("🎉 Transaksi Berhasil Disimpan ke Database!");
+                            sessionStorage.removeItem("keranjangBelanja");
+                            window.location.href = "/penjualan";
+                        } else {
+                            return res.text().then(text => { throw new Error(text) });
+                        }
+                    })
+                    .catch(err => {
+                        alert("Gagal menyimpan transaksi: " + err.message);
+                    });
             });
         })();
         /*]]>*/
     </script>
 </body>
+
 </html>

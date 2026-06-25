@@ -1,7 +1,8 @@
 @import url('variable.css');
 
 * {
-    box-sizing: border-box; /* padding doesn't add to element width */
+    box-sizing: border-box;
+    /* padding doesn't add to element width */
     margin: 0;
     padding: 0;
 }
@@ -26,6 +27,11 @@
     font-weight: bold;
     padding: 0 16px 20px;
     line-height: 1.4;
+}
+
+.sidebar-brand img {
+    width: 150px;
+    height: auto;
 }
 
 
@@ -53,7 +59,7 @@
 
 /* =======NAVIGASI MENU======= */
 .nav-menu {
-    list-style:none;
+    list-style: none;
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -101,7 +107,7 @@
 
 /* ========MAIN CONTENT- HEADER ========= */
 .main-content {
-    flex: 1;           
+    flex: 1;
     padding: 24px 28px;
     background: var(--color-bg);
 }
@@ -135,11 +141,11 @@
 /* ===========MAIN CCONTENT - TABEL DATA========== */
 .main-data {
     width: 100%;
-    overflow-x: auto; 
+    overflow-x: auto;
     margin: 20px 0;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     background-color: var(--color-tabel2);
-    border-radius: 8px; 
+    border-radius: 8px;
 }
 
 .main-data table {
@@ -155,7 +161,7 @@
     text-align: left;
 }
 
-.main-data th, 
+.main-data th,
 .main-data td {
     padding: 14px 16px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.08);
@@ -212,7 +218,8 @@
 /* =============== KASIR - PENJUALAN.JAVA ================*/
 /* pembungkus kasir */
 .kasir {
-    width: 100%;;
+    width: 100%;
+    ;
     margin: 0 auto;
 }
 
@@ -249,7 +256,7 @@
     padding: 15px;
     border: 2px solid var(--color-primary2);
     border-radius: 5px;
-    box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.3);
+    box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.3);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -287,7 +294,7 @@
     border: 2px solid var(--color-primary2);
     border-radius: 5px;
     padding: 15px;
-    box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.3);
+    box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.3);
 }
 
 .keranjang table {
@@ -313,23 +320,23 @@
 }
 
 .btn-aksi button {
-    flex: 1;               
+    flex: 1;
     border: none;
     border-radius: 4px;
     font-weight: bold;
     cursor: pointer;
-    padding: 20px 0 !important; 
+    padding: 20px 0 !important;
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Pembayaran - Kasir */
 .metode-pembayaran {
     border-top: 2px solid var(--color-tabel1);
-    border-left: none !important; 
+    border-left: none !important;
     padding-top: 20px !important;
     width: 100%;
-    
+
 }
 
 .metode-pembayaran h3 {
@@ -338,34 +345,34 @@
 
 #formTransaksi {
     display: flex;
-    flex-direction: row; 
-    align-items: flex-end; 
+    flex-direction: row;
+    align-items: flex-end;
     gap: 15px;
     width: 100%;
     padding: 20px;
 }
 
-#formTransaksi > div {
-    flex: 1; 
-    margin-bottom: 0 !important; 
+#formTransaksi>div {
+    flex: 1;
+    margin-bottom: 0 !important;
 }
 
-#formTransaksi select, 
+#formTransaksi select,
 #formTransaksi input[type="number"] {
     width: 100% !important;
     border: 2px solid var(--color-tabel1);
     border-radius: 4px;
-    box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.3);
+    box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.3);
 }
 
 #formTransaksi button[type="submit"] {
     flex: 1.2;
-    height: 40px; 
+    height: 40px;
     border: none;
     border-radius: 4px;
     font-weight: bold;
     cursor: pointer;
-    box-shadow: 5px 5px 5px 0px rgba(0,0,0,0.3);
+    box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.3);
     background: var(--color-btn1);
     color: var(--color-text-2);
 }
@@ -376,14 +383,14 @@
 
 /* Ini untuk latar belakang hitam transparan (backdrop) yang menutupi seluruh layar */
 .modal-overlay {
-    display: none; 
+    display: none;
     position: fixed;
     z-index: 9999;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); 
+    background-color: rgba(0, 0, 0, 0.5);
     justify-content: center;
     align-items: center;
 }
@@ -401,10 +408,71 @@
 .modal-lebar-member {
     width: 450px;
     max-height: 85vh;
-    overflow-y: auto; 
+    overflow-y: auto;
 }
 
 /* // Custom lebar khusus modal tambah member baru */
 .modal-lebar-tambah {
     width: 350px;
+}
+
+
+
+/* ====================CETAK NOTA=============== */
+.kop-surat img {
+    width: 150px;
+    height: auto;
+    display: none;
+}
+
+/* KONDISI SAAT DICETAK KERTAS / PDF */
+@media print {
+    body {
+        background: white;
+        color: black;
+    }
+
+    .dashboard-wrapper aside,
+    .main-header,
+    .btn-cetak,
+    .summary-cards {
+        display: none !important;
+    }
+
+    .main-content {
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+    }
+
+    .kop-surat {
+        display: block !important;
+    }
+
+    .kop-surat img {
+        display: block !important;
+    }
+
+    table {
+        width: 100% !important;
+        border: 1px solid #000 !important;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+
+    th,
+    td {
+        border: 1px solid #000 !important;
+        padding: 8px !important;
+        color: black !important;
+    }
+
+    th {
+        background: #f1f5f9 !important;
+    }
+
+    @page {
+        size: A4;
+        margin: 1cm;
+    }
 }
