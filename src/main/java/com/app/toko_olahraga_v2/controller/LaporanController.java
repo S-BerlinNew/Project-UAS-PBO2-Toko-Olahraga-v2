@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.app.toko_olahraga_v2.model.Penjualan;
 import com.app.toko_olahraga_v2.service.LaporanService;
@@ -19,13 +20,23 @@ public class LaporanController {
     }
 
     @GetMapping("/laporan")
-    public String index(Model model) {
-        List<Penjualan> listPenjualan = laporanService.getAll();
+    public String index(
+            @RequestParam(value = "tglMulai", required = false) String tglMulai,
+            @RequestParam(value = "tglSelesai", required = false) String tglSelesai,
+            @RequestParam(value = "metode", required = false) String metode,
+            Model model) {
+
+        // Ambil data berdasarkan filter yang diinput user
+        List<Penjualan> listPenjualan = laporanService.getLaporanTerFilter(tglMulai, tglSelesai, metode);
 
         model.addAttribute("listPenjualan", listPenjualan);
         model.addAttribute("totalOmset", laporanService.hitungTotalOmset(listPenjualan));
-        model.addAttribute("penjualan", new Penjualan());
-        model.addAttribute("mode", null);
+
+        // Kirim balik parameter ke HTML agar form input tidak ter-reset otomatis
+        // setelah submit
+        model.addAttribute("tglMulaiParam", tglMulai);
+        model.addAttribute("tglSelesaiParam", tglSelesai);
+        model.addAttribute("metodeParam", metode);
 
         return "laporan/index";
     }

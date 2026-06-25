@@ -16,12 +16,12 @@ public class Penjualan {
 
     // HUBUNGAN KE TABEL AKUN (KASIR)
     @ManyToOne
-    @JoinColumn(name = "id_akun") 
+    @JoinColumn(name = "id_akun")
     private Akun akun;
 
     // HUBUNGAN KE TABEL CUSTOMER
     @ManyToOne
-    @JoinColumn(name = "id_customer") 
+    @JoinColumn(name = "id_customer")
     private Customer customer;
 
     @Column(name = "no_nota", unique = true, nullable = false, length = 50)
@@ -34,17 +34,18 @@ public class Penjualan {
     private String metodePembayaran;
 
     @Column(name = "total_bayar")
-    private double totalBayar; 
+    private double totalBayar;
 
     @Column(name = "jumlah_bayar")
-    private double jumlahBayar; 
+    private double jumlahBayar;
 
     @Column(name = "uang_tunai")
-    private double uangTunai; 
+    private double uangTunai;
 
     @Column(name = "uang_kembali")
-    private double uangKembali; 
+    private double uangKembali;
 
+    // TAMBAHAN ANTI
     @OneToMany(mappedBy = "penjualan", fetch = FetchType.EAGER)
     private List<DetailPenjualan> detailPenjualan;
 
@@ -53,8 +54,8 @@ public class Penjualan {
     }
 
     // Konstruktor
-    public Penjualan(Akun akun, Customer customer, String noNota, LocalDateTime tanggal, 
-                     String metodePembayaran, double totalBayar, double jumlahBayar, double uangKembali) {
+    public Penjualan(Akun akun, Customer customer, String noNota, LocalDateTime tanggal,
+            String metodePembayaran, double totalBayar, double jumlahBayar, double uangKembali) {
         this.akun = akun;
         this.customer = customer;
         this.noNota = noNota;
@@ -69,6 +70,7 @@ public class Penjualan {
     public int getIdPenjualan() {
         return idPenjualan;
     }
+
     public void setIdPenjualan(int idPenjualan) {
         this.idPenjualan = idPenjualan;
     }
@@ -76,6 +78,7 @@ public class Penjualan {
     public Akun getAkun() {
         return akun;
     }
+
     public void setAkun(Akun akun) {
         this.akun = akun;
     }
@@ -83,6 +86,7 @@ public class Penjualan {
     public Customer getCustomer() {
         return customer;
     }
+
     public void setCustomer(Customer customer) {
         this.customer = customer;
     }
@@ -90,6 +94,7 @@ public class Penjualan {
     public String getNoNota() {
         return noNota;
     }
+
     public void setNoNota(String noNota) {
         this.noNota = noNota;
     }
@@ -97,6 +102,7 @@ public class Penjualan {
     public LocalDateTime getTanggal() {
         return tanggal;
     }
+
     public void setTanggal(LocalDateTime tanggal) {
         this.tanggal = tanggal;
     }
@@ -104,6 +110,7 @@ public class Penjualan {
     public String getMetodePembayaran() {
         return metodePembayaran;
     }
+
     public void setMetodePembayaran(String metodePembayaran) {
         this.metodePembayaran = metodePembayaran;
     }
@@ -111,6 +118,7 @@ public class Penjualan {
     public double getTotalBayar() {
         return totalBayar;
     }
+
     public void setTotalBayar(double totalBayar) {
         this.totalBayar = totalBayar;
     }
@@ -118,6 +126,7 @@ public class Penjualan {
     public double getJumlahBayar() {
         return jumlahBayar;
     }
+
     public void setJumlahBayar(double jumlahBayar) {
         this.jumlahBayar = jumlahBayar;
     }
@@ -125,6 +134,7 @@ public class Penjualan {
     public double getUangKembali() {
         return uangKembali;
     }
+
     public void setUangKembali(double uangKembali) {
         this.uangKembali = uangKembali;
     }
@@ -132,19 +142,23 @@ public class Penjualan {
     public double getUangTunai() {
         return uangTunai;
     }
+
     public void setUangTunai(double uangTunai) {
         this.uangTunai = uangTunai;
     }
 
+    // TAMBAHAN ANTI
     public List<DetailPenjualan> getDetailPenjualan() {
         return detailPenjualan;
     }
+
     public void setDetailPenjualan(List<DetailPenjualan> detailPenjualan) {
         this.detailPenjualan = detailPenjualan;
     }
 
     public double getKeuntungan() {
-        if (detailPenjualan == null) return 0;
+        if (detailPenjualan == null)
+            return 0;
         double totalKeuntungan = 0;
         for (DetailPenjualan detail : detailPenjualan) {
             if (detail.getBarang() != null) {
