@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class PenjualanController {
@@ -173,12 +175,26 @@ public class PenjualanController {
                 }
             }
 
-            penjualanService.prosesTransaksi(penjualan, listKeranjang);
-            return ResponseEntity.ok("Transaksi berhasil disimpan.");
+            // ✅ PERUBAHAN: Simpan hasil transaksi ke variabel agar bisa ambil ID-nya
+            Penjualan hasil = penjualanService.prosesTransaksi(penjualan, listKeranjang);
+
+            // ✅ PERUBAHAN: Return ID penjualan agar frontend bisa buka halaman nota
+            return ResponseEntity.ok(Map.of(
+                "idPenjualan", hasil.getIdPenjualan(),
+                "pesan", "Transaksi berhasil disimpan."
+            ));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    // 6. MENAMPILKAN HALAMAN NOTA SETELAH TRANSAKSI SELESAI
+    @GetMapping("/penjualan/nota/{id}")
+    public String tampilkanNota(@PathVariable Integer id, Model model) {
+        Penjualan p = penjualanService.getById(id);
+        model.addAttribute("p", p);
+        return "penjualan/nota";
     }
 
     // Helper records for JSON serialization/deserialization

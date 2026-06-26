@@ -99,4 +99,9 @@ public class PenjualanService {
 
         return String.format("TRX-%s-%03d", formatTanggal, nomorUrutNext);
     }
+
+    public Penjualan getById(Integer id) {
+    return penjualanRepository.findById(id)
+        .orElseThrow(() -> new RuntimeException("Transaksi tidak ditemukan"));
+    }
 }

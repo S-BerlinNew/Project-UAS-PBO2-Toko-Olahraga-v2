@@ -51,7 +51,7 @@
                 <td th:text="${#numbers.formatDecimal(detail.barang.hargaJual, 0, 'POINT', 0, 'COMMA')}">0</td>
                 <td th:text="${detail.diskon}">0</td>
                 <td style="text-align: right;"
-                    th:text="${#numbers.formatDecimal(detail.totalHarga, 0, 'POINT', 0, 'COMMA')}">0</td>
+                    th:text="${#numbers.formatDecimal(detail.subtotal, 0, 'POINT', 0, 'COMMA')}">0</td>
             </tr>
         </tbody>
     </table>
