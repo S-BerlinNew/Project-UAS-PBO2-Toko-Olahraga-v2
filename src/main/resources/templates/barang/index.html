@@ -1,131 +1,167 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Manajemen Barang - Toko Olahraga</title>
-    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css(v=2)}">
 </head>
+
 <body>
 
-<div class="dashboard-wrapper">
-    <!-- ===== SIDEBAR ===== -->
-    <aside th:replace="~{fragments/sidebar :: sidebar-fragments}"></aside>
+    <div class="dashboard-wrapper">
+        <!-- ===== SIDEBAR ===== -->
+        <aside th:replace="~{fragments/sidebar :: sidebar-fragments(activeMenu='barang')}"></aside>
 
-    <!-- ===== MAIN CONTENT ===== -->
-    <main class="main-content">
-        
-        <div class="main-header">
-            <h2>Master Data Barang Olahraga</h2>
-            <br>
-            <a th:href="@{/barang/tambah}">+ Tambah Barang</a>
-        </div>
-        <br><br>
+        <!-- ===== MAIN CONTENT ===== -->
+        <main class="main-content">
 
-        <div class="main-data">
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID Barang</th>
-                        <th>Kode Barang</th>
-                        <th>Nama Barang</th>
-                        <th>Harga Jual</th>
-                        <th>Harga Modal</th>
-                        <th>Brand</th>
-                        <th>Warna</th>
-                        <th>Stok</th>
-                        <th>Status</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="b : ${listBarang}">
-                        <td th:text="${b.idBarang}"></td>
-                        <td th:text="${b.kodeBarang}"></td>
-                        <td th:text="${b.namaBarang}"></td>
-                        <td th:text="${b.hargaJual}"></td>
-                        <td th:text="${b.hargaModal}"></td>
-                        <td th:text="${b.Brand}"></td>
-                        <td th:text="${b.warna}"></td>
-                        <td th:text="${b.stok}"></td>
-                        <td th:text="${b.status}"></td>
-                        <td th:if="${session.role == 'ADMIN'}">
-                            <a th:href="@{/barang/edit/{id}(id=${b.idBarang})}">Edit</a>
-                            <a th:href="@{/barang/hapus/{id}(id=${b.idBarang})}" onclick="return confirm('Yakin ingin menghapus barang ini?')">Hapus</a>
-                        </td>
-                    </tr>
-                    <tr th:if="${#lists.isEmpty(listBarang)}">
-                        <td colspan="11" style="text-align: center; color: red; padding: 10px;">Belum ada data barang!</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+            <header class="top-navbar">
+                <h1 class="page-title">Master Data Barang Olahraga</h1>
 
+                <div class="navbar-right">
+                    <div class="notification-icon">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                            <path
+                                d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z" />
+                        </svg>
+                    </div>
+                    <div class="user-profile">
+                        <div class="user-info">
+                            <span class="welcome-text">Welcome</span>
+                            <span class="user-name" th:text="${session.loggedInUser}">User</span>
+                        </div>
+                        <div class="avatar-circle"></div>
+                    </div>
+                </div>
+            </header>
 
-
-        <!-- FORM START -->
-        <div th:if="${mode != null}">
-            <div>
-                <h3 th:text="${mode == 'tambah' ? 'Form Tambah Barang Baru' : 'Form Edit Data Barang'}">Form Barang</h3>
+            <div class="action-top">
+                <a th:href="@{/barang/tambah}" class="btn-tambah">+ Tambah Barang</a>
             </div>
 
-            <div>
-                <form th:action="${mode == 'tambah' ? '/barang/simpan' : '/barang/update'}" th:object="${barang}" method="POST">
-                    <input type="hidden" th:if="${mode == 'edit'}" th:field="*{idBarang}" />
-                    <p>
-                        <label>Kode Barang</label>
-                        <input type="text" th:field="*{kodeBarang}" th:readonly="${mode == 'edit'}" required />
-                    </p>
-
-                    <p>
-                        <label>Nama Barang:</label><br>
-                        <input type="text" th:field="*{namaBarang}" required />
-                    </p>
-
-                    <p>
-                        <label>Harga Jual:</label><br>
-                        <input type="number" step="any" th:field="*{hargaJual}" required />
-                    </p>
-
-                    <p>
-                        <label>Harga Modal:</label><br>
-                        <input type="number" step="any" th:field="*{hargaModal}" required />
-                    </p>
-
-                    <p>
-                        <label>Jenis Barang</label>
-                        <input type="text" th:field="*{jenisBarang}"/>
-                    </p>
-
-                    <p>
-                        <label>Brand</label>
-                        <input type="text" th:field="*{brand}" />
-                    </p>
-
-                    <p>
-                        <label>Warna</label>
-                        <input type="text" th:field="*{warna}" />
-                    </p>
-
-                    <p>
-                        <label>Stok</label>
-                        <input type="number" th:field="*{stok}" required />
-                    </p>
-
-                    <p>
-                        <label>Status</label><br>
-                        <select th:field="*{status}" required style="padding: 6px; width: 100%; max-width: 200px; border-radius: 4px; border: 1px solid #ccc;">
-                            <option value="1">Aktif</option>
-                            <option value="0">Nonaktif</option>
-                        </select>
-                    </p>
-
-                    <br>
-                    <button type="submit">💾 Simpan Data</button>
-                    <a th:href="@{/barang}">❌ Batal</a>
-                </form>
+            <div class="main-data">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID Barang</th>
+                            <th>Kode Barang</th>
+                            <th>Nama Barang</th>
+                            <th>Harga Jual</th>
+                            <th>Harga Modal</th>
+                            <th>Brand</th>
+                            <th>Warna</th>
+                            <th>Stok</th>
+                            <th>Status</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="b : ${listBarang}">
+                            <td th:text="${b.idBarang}"></td>
+                            <td th:text="${b.kodeBarang}"></td>
+                            <td th:text="${b.namaBarang}"></td>
+                            <td th:text="${b.hargaJual}"></td>
+                            <td th:text="${b.hargaModal}"></td>
+                            <td th:text="${b.Brand}"></td>
+                            <td th:text="${b.warna}"></td>
+                            <td th:text="${b.stok}"></td>
+                            <td th:text="${b.status}"></td>
+                            <td th:if="${session.role == 'ADMIN'}">
+                                <div class="action-buttons">
+                                    <a th:href="@{/barang/edit/{id}(id=${b.idBarang})}">Edit</a>
+                                    <a th:href="@{/barang/hapus/{id}(id=${b.idBarang})}"
+                                        onclick="return confirm('Yakin ingin menghapus barang ini?')">Hapus</a>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(listBarang)}">
+                            <td colspan="11" class="empty-msg">Belum ada data barang!</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-        </div>
-    </main>
-</div>
+
+
+
+            <!-- FORM START -->
+            <div th:if="${mode != null}" class="form-card-container">
+                <div class="form-card-glass">
+                    <div class="form-header-glass">
+                        <h2 th:text="${mode == 'tambah' ? 'Tambah Barang' : 'Edit Barang'}">Tambah Barang</h2>
+                        <p>Silakan isi data barang olahraga di bawah ini.</p>
+                    </div>
+
+                    <form th:action="${mode == 'tambah' ? '/barang/simpan' : '/barang/update'}" th:object="${barang}"
+                        method="POST" class="form-body-glass">
+                        <input type="hidden" th:if="${mode == 'edit'}" th:field="*{idBarang}" />
+
+                        <div class="form-row-glass">
+                            <div class="form-group-glass">
+                                <label>Kode Barang</label>
+                                <input type="text" th:field="*{kodeBarang}" th:readonly="${mode == 'edit'}"
+                                    placeholder="Kode Barang" required />
+                            </div>
+                            <div class="form-group-glass">
+                                <label>Nama Barang</label>
+                                <input type="text" th:field="*{namaBarang}" placeholder="Nama Barang" required />
+                            </div>
+                        </div>
+
+                        <div class="form-row-glass">
+                            <div class="form-group-glass">
+                                <label>Harga Jual</label>
+                                <input type="number" step="any" th:field="*{hargaJual}" placeholder="Harga Jual"
+                                    required />
+                            </div>
+                            <div class="form-group-glass">
+                                <label>Harga Modal</label>
+                                <input type="number" step="any" th:field="*{hargaModal}" placeholder="Harga Modal"
+                                    required />
+                            </div>
+                        </div>
+
+                        <div class="form-row-glass">
+                            <div class="form-group-glass">
+                                <label>Jenis Barang</label>
+                                <input type="text" th:field="*{jenisBarang}" placeholder="Jenis Barang" />
+                            </div>
+                            <div class="form-group-glass">
+                                <label>Brand</label>
+                                <input type="text" th:field="*{brand}" placeholder="Brand" />
+                            </div>
+                        </div>
+
+                        <div class="form-row-glass">
+                            <div class="form-group-glass">
+                                <label>Warna</label>
+                                <input type="text" th:field="*{warna}" placeholder="Warna" />
+                            </div>
+                            <div class="form-group-glass">
+                                <label>Stok</label>
+                                <input type="number" th:field="*{stok}" placeholder="Stok" required />
+                            </div>
+                        </div>
+
+                        <div class="form-row-glass">
+                            <div class="form-group-glass">
+                                <label>Status</label>
+                                <select th:field="*{status}" required>
+                                    <option value="1">Aktif</option>
+                                    <option value="0">Nonaktif</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-actions-glass">
+                            <button type="submit" class="btn-submit-glass">Simpan Data</button>
+                            <a th:href="@{/barang}" class="btn-cancel-glass">Batal</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
 </body>
+
 </html>
