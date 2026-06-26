@@ -3,46 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <title>Login - Toko Olahraga</title>
-    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/login.css}">
 </head>
 <body>
 
-<div class="login-bg">
+<div class="login-page">
     <div class="login-card">
-
-        <h2>Toko Olahraga Amatir</h2>
-        <p class="subtitle">Silakan login untuk melanjutkan</p>
-
-        <div class="error-msg" th:if="${errorPopUp}" th:text="${errorPopUp}">
-            Username atau password salah!
+        <div class="avatar">
+            <svg viewBox="0 0 24 24" width="56" height="56" fill="#0d4b75">
+                <circle cx="12" cy="8" r="4"/>
+                <path d="M12 14c-6.1 0-8 4-8 4v2h16v-2s-1.9-4-8-4z"/>
+            </svg>
         </div>
+        <h1 class="page-title">User Login</h1>
+        
+        <form th:action="@{/login}" method="post" style="width: 100%;">
+            
+            <div class="error-msg" th:if="${errorPopUp}">
+                <span th:text="${errorPopUp}">Username atau password salah!</span>
+            </div>
 
-        <form th:action="@{/login}" method="post">
-            
-            <div class="form-group">
-                <label for="usernameInput">Username</label>
-                <input type="text" 
-                       id="usernameInput" 
-                       name="username" 
-                       placeholder="Masukkan username" 
-                       autocomplete="username" 
-                       required>
+            <div class="input-group">
+                <input type="text" name="username" placeholder="Username" autocomplete="username" required>
             </div>
             
-            <div class="form-group">
-                <label for="passwordInput">Password</label>
-                <input type="password" 
-                       id="passwordInput" 
-                       name="password" 
-                       placeholder="Masukkan password" 
-                       autocomplete="current-password" 
-                       required>
+            <div class="input-group">
+                <input type="password" name="password" placeholder="Password" autocomplete="current-password" required>
             </div>
-            
-            <button type="submit" class="btn-login">Login</button>
+
+            <div class="options-group">
+                <a href="#" class="forgot-password">Forgot Password?</a>
+            </div>
+
+            <div style="display: flex; justify-content: center;">
+                <button type="submit" class="btn-login">Login</button>
+            </div>
         </form>
-
     </div>
+
+    <a href="/register" class="btn-register">Don't have an account? Register</a>
 </div>
 
 </body>
