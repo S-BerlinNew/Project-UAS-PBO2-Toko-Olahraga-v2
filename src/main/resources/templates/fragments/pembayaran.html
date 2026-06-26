@@ -1,90 +1,150 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Konfirmasi Pembayaran Kasir</title>
 </head>
+
 <body>
 
-    <div th:fragment="modalPembayaran" id="modalOverlayPembayaran" 
-         style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 9999;">
-        
-        <div style="max-width: 500px; width: 100%; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); box-sizing: border-box; font-family: sans-serif;">
-            
-            <h2>🛡️ KONFIRMASI TRANSAKSI</h2>
-            <p style="color: #666;">Nomor Nota: <b th:text="${penjualan.noNota}"></b></p>
+    <div th:fragment="modalPembayaran" id="modalOverlayPembayaran"
+        style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 9999;">
+
+        <div
+            style="max-width: 500px; width: 100%; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); box-sizing: border-box; font-family: sans-serif;">
+
+            <h2>🛡️ KONFIRMASI TRANSAKSI FINAL</h2>
+            <p style="color: #666;">Silakan periksa kembali nominal sebelum disimpan ke database.</p>
             <hr style="border: 1px dashed #ccc; margin: 20px 0;">
 
-            <div th:if="${penjualan.metodePembayaran == 'TUNAI'}" style="border: 2px solid green; padding: 20px; background: #f0fff0; border-radius: 5px;">
+            <div id="divTunai" class="opsi-div-modal"
+                style="border: 2px solid green; padding: 20px; background: #f0fff0; border-radius: 5px; display: none;">
                 <h3 style="color: green; margin-top: 0;">💵 PEMBAYARAN TUNAI (CASH)</h3>
                 <table style="width: 100%; font-size: 16px;">
                     <tr>
                         <td>Total Belanja</td>
-                        <td>: <b>Rp <span th:text="${#numbers.formatDecimal(penjualan.totalBayar, 0, 'POINT', 0, 'COMMA')}"></span></b></td>
+                        <td>: Rp <span id="mdlTotalTunai">0</span></td>
                     </tr>
                     <tr>
                         <td>Uang Diterima</td>
-                        <td>: Rp <span th:text="${#numbers.formatDecimal(penjualan.jumlahBayar, 0, 'POINT', 0, 'COMMA')}"></span></td>
+                        <td>: Rp <span id="mdlDiterimaTunai">0</span></td>
                     </tr>
-                    <tr style="font-size: 20px; color: green; font-weight: bold;">
+                    <tr style="font-size: 18px; color: green; font-weight: bold;">
                         <td>Uang Kembalian</td>
-                        <td>: Rp <span th:text="${#numbers.formatDecimal(penjualan.uangKembali, 0, 'POINT', 0, 'COMMA')}"></span></td>
+                        <td>: Rp <span id="mdlKembalianTunai">0</span></td>
                     </tr>
                 </table>
-                
-                <p style="margin-top: 20px; font-size: 14px; color: #555;">Silakan berikan uang kembalian di atas kepada pelanggan.</p>
-                
-                <form th:action="@{/penjualan/simpan-final}" method="POST">
-                    <input type="hidden" name="noNota" th:value="${penjualan.noNota}">
-                    <button type="submit" style="width: 100%; padding: 12px; background: green; color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 15px; border-radius: 4px;">
-                        ✅ PEMBAYARAN SELESAI
-                    </button>
-                </form>
             </div>
 
-            <div th:if="${penjualan.metodePembayaran == 'QRIS'}" style="border: 2px solid #0056b3; padding: 20px; background: #f0f5ff; border-radius: 5px;">
+            <div id="divQris" class="opsi-div-modal"
+                style="border: 2px solid #0056b3; padding: 20px; background: #f0f5ff; border-radius: 5px; display: none;">
                 <h3 style="color: #0056b3; margin-top: 0;">📱 PEMBAYARAN VIA QRIS / DEBIT</h3>
-                <p style="font-size: 18px; font-weight: bold; color: #333;">Total Tagihan: Rp <span th:text="${#numbers.formatDecimal(penjualan.totalBayar, 0, 'POINT', 0, 'COMMA')}"></span></p>
-                
-                <div style="background: #fff9db; padding: 10px; border: 1px solid #f59f00; font-weight: bold; text-align: center; margin: 15px 0; color: #f59f00;">
-                    ⏳ MENUNGGU PEMBAYARAN CUSTOMER SCAN...
+                <p style="font-size: 18px; font-weight: bold;">Total Tagihan: Rp <span class="mdlTotalNonTunai">0</span>
+                </p>
+                <div
+                    style="background: #fff9db; padding: 10px; border: 1px solid #f59f00; font-weight: bold; text-align: center; color: #b57c1e; font-size: 13px;">
+                    ⏳ MENUNGGU PROSES SCAN SELESAI...
                 </div>
-                
-                <p style="font-size: 13px; color: #666;">*Pastikan status sukses sudah muncul di EDC atau dashboard QRIS e-wallet toko Anda secara manual.</p>
-                
-                <form th:action="@{/penjualan/simpan-final}" method="POST">
-                    <input type="hidden" name="noNota" th:value="${penjualan.noNota}">
-                    <button type="submit" style="width: 100%; padding: 12px; background: #0056b3; color: white; border: none; font-weight: bold; cursor: pointer; border-radius: 4px;">
-                        ✅ PEMBAYARAN SELESAI
-                    </button>
-                </form>
             </div>
 
-            <div th:if="${penjualan.metodePembayaran == 'TRANSFER'}" style="border: 2px solid orange; padding: 20px; background: #fffaf0; border-radius: 5px;">
+            <div id="divTransfer" class="opsi-div-modal"
+                style="border: 2px solid orange; padding: 20px; background: #fffaf0; border-radius: 5px; display: none;">
                 <h3 style="color: orange; margin-top: 0;">🏦 PEMBAYARAN TRANSFER BANK</h3>
-                <p style="font-size: 18px; font-weight: bold; color: #333;">Total Tagihan: Rp <span th:text="${#numbers.formatDecimal(penjualan.totalBayar, 0, 'POINT', 0, 'COMMA')}"></span></p>
-                
-                <div style="background: #ffe0b2; padding: 10px; border: 1px solid #b57c1e; font-weight: bold; text-align: center; margin: 15px 0; color: #b57c1e;">
-                    ⏳ MENUNGGU PEMBAYARAN / CEK MUTASI BANK...
+                <p style="font-size: 18px; font-weight: bold;">Total Tagihan: Rp <span class="mdlTotalNonTunai">0</span>
+                </p>
+                <div
+                    style="background: #ffe0b2; padding: 10px; border: 1px solid #b57c1e; font-weight: bold; text-align: center; color: #b57c1e; font-size: 13px;">
+                    ⏳ HARAP KASIR CEK MUTASI SECARA MANUAL...
                 </div>
-                
-                <p style="font-size: 13px; color: #666;">*Silakan berikan nomor rekening toko ke customer. Harap kasir mengecek m-Banking secara manual sebelum klik tombol di bawah.</p>
-                
-                <form th:action="@{/penjualan/simpan-final}" method="POST">
-                    <input type="hidden" name="noNota" th:value="${penjualan.noNota}">
-                    <button type="submit" style="width: 100%; padding: 12px; background: orange; color: white; border: none; font-weight: bold; cursor: pointer; border-radius: 4px;">
-                        ✅ PEMBAYARAN SELESAI
-                    </button>
-                </form>
             </div>
 
-            <button type="button" onclick="document.getElementById('modalOverlayPembayaran').style.display='none'" 
-                    style="width: 100%; padding: 10px; background: #ef4444; color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; border-radius: 4px;">
-                ❌ BATAL / KEMBALI KE KASIR
+            <button type="button" id="btnSimpanFinalKeDatabase"
+                style="width: 100%; padding: 12px; background: #22c55e; color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 20px; border-radius: 4px; font-size: 15px;">
+                ✅ PEMBAYARAN SELESAI & SIMPAN KE DATABASE
             </button>
 
+            <button type="button" onclick="document.getElementById('modalOverlayPembayaran').style.display='none'"
+                style="width: 100%; padding: 10px; background: #ef4444; color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; border-radius: 4px;">
+                ❌ BATAL
+            </button>
         </div>
     </div>
 
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        (function () {
+            // 1. Ambil semua parameter kiriman dari Thymeleaf
+            const metode = /*[[${metode}]]*/ 'TUNAI';
+            const customerId = /*[[${customerId}]]*/ null;
+            const totalBayar = parseFloat(/*[[${totalBayar}]]*/ 0);
+            const tunaiDiterima = parseFloat(/*[[${tunaiDiterima}]]*/ 0);
+            const idAkun = /*[[${idAkun}]]*/ null;
+
+            // 2. Tarik array keranjang belanja dari Session Storage lokal
+            const keranjangData = JSON.parse(sessionStorage.getItem("keranjangBelanja") || "[]");
+
+            // 3. Set tampilan DIV sesuai metode terpilih
+            if (metode === 'TUNAI') {
+                document.getElementById("divTunai").style.display = "block";
+                document.getElementById("mdlTotalTunai").innerText = totalBayar.toLocaleString('id-ID');
+                document.getElementById("mdlDiterimaTunai").innerText = tunaiDiterima.toLocaleString('id-ID');
+                document.getElementById("mdlKembalianTunai").innerText = (tunaiDiterima - totalBayar).toLocaleString('id-ID');
+            } else {
+                const targetDiv = (metode === 'QRIS') ? "divQris" : "divTransfer";
+                document.getElementById(targetDiv).style.display = "block";
+                document.querySelectorAll(".mdlTotalNonTunai").forEach(el => el.innerText = totalBayar.toLocaleString('id-ID'));
+            }
+
+            // 4. PROSES PENYIMPANAN RANGKUMAN UTUH MASSAL
+            document.getElementById("btnSimpanFinalKeDatabase").addEventListener("click", function () {
+                if (keranjangData.length === 0) {
+                    alert("Aksi ditolak! Data item belanja tidak ditemukan.");
+                    return;
+                }
+
+                // Seluruh data (id_akun, customer, metode bayar, dan list barang) digabungkan jadi satu objek JSON utuh
+                const payloadFinal = {
+                    idAkun: idAkun ? parseInt(idAkun) : null, // ID akun kasir yang login
+                    customerId: customerId ? parseInt(customerId) : null,
+                    metodePembayaran: metode,
+                    totalBayar: totalBayar,
+                    jumlahBayar: metode === 'TUNAI' ? tunaiDiterima : totalBayar, // non-tunai diisi totalBayar agar tidak <= 0 di server
+                    uangKembali: metode === 'TUNAI' ? (tunaiDiterima - totalBayar) : 0,
+                    // Rangkuman lengkap item belanjaan
+                    items: keranjangData.map(item => ({
+                        idBarang: item.idBarang,
+                        namaBarang: item.namaBarang,
+                        hargaJual: item.hargaJual,
+                        qty: item.qty,
+                        brand: item.brand,
+                        diskonPersen: item.diskonPersen,
+                        subtotal: (item.hargaJual * item.qty) - ((item.hargaJual * item.qty) * (item.diskonPersen / 100))
+                    }))
+                };
+
+                // Kirim data rangkuman massal ke server database
+                fetch("/penjualan/simpan-final", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payloadFinal)
+                })
+                    .then(res => {
+                        if (res.ok) {
+                            alert("🎉 Transaksi Berhasil Disimpan ke Database!");
+                            sessionStorage.removeItem("keranjangBelanja");
+                            window.location.href = "/penjualan";
+                        } else {
+                            return res.text().then(text => { throw new Error(text) });
+                        }
+                    })
+                    .catch(err => {
+                        alert("Gagal menyimpan transaksi: " + err.message);
+                    });
+            });
+        })();
+        /*]]>*/
+    </script>
 </body>
+
 </html>

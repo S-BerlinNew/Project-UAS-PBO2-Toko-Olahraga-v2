@@ -66,9 +66,10 @@ public class PenjualanService {
             throw new RuntimeException("Transaksi digagalkan! Uang kurang sebesar : Rp" + Math.abs(kembalian));
         }
 
-        //5.------------Set Total Bayar dan Kembali---------------
-        penjualan.setTotalBayar((akumulasiTotalBayar));
+        //5.------------Set Total Bayar, Kembali, dan Uang Tunai---------------
+        penjualan.setTotalBayar(akumulasiTotalBayar);
         penjualan.setUangKembali(kembalian);
+        penjualan.setUangTunai(penjualan.getJumlahBayar());
 
         // 6.------------Simpan Penjualan--------------
         Penjualan penjualanSaved = penjualanRepository.save(penjualan);

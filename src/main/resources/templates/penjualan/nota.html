@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Struk - Toko Olahraga</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+
+<body>
+    <div>
+        <img th:src="@{/assets/logo.png}" alt="Logo">
+        <p>Jl. Ketapang No 100, Kota Pontianak</p>
+        <p>Telepon : 08911911911</p>
+    </div>
+
+    <div class="line"></div>
+
+    <table>
+        <tr>
+            <td>Nota: <span th:text="${p.noNota}"></span></td>
+        </tr>
+        <tr>
+            <td>Kasir: <span th:text="${p.akun != null ? p.akun.username : 'Admin'}"></span></td>
+        </tr>
+        <tr>
+            <td>Tanggal: <span th:text="${#temporals.format(p.tanggal, 'dd-MM-yyyy HH:mm')}"></span></td>
+        </tr>
+    </table>
+
+    <div class="line"></div>
+
+    <table>
+        <thead>
+            <tr style="text-align: left;">
+                <th>Nama Barang</th>
+                <br>
+                <th>Qty</th>
+                <br>
+                <th>Harga Satuan</th>
+                <br>
+                <th>Diskon(%)</th>
+                <br>
+                <th style="text-align: right;">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="detail : ${p.detailPenjualan}">
+                <td th:text="${detail.barang != null ? detail.barang.namaBarang : 'Item'}"></td>
+                <td th:text="${detail.qty}">1</td>
+                <td th:text="${#numbers.formatDecimal(detail.barang.hargaJual, 0, 'POINT', 0, 'COMMA')}">0</td>
+                <td th:text="${detail.diskon}">0</td>
+                <td style="text-align: right;"
+                    th:text="${#numbers.formatDecimal(detail.totalHarga, 0, 'POINT', 0, 'COMMA')}">0</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="line"></div>
+
+    <table>
+        <tr style="font-size: 18px; font-weight: bold;">
+            <td>Total Bayar:</td>
+            <td style="text-align: right;"
+                th:text="'Rp ' + ${#numbers.formatDecimal(p.totalBayar, 0, 'POINT', 0, 'COMMA')}">0</td>
+        </tr>
+    </table>
+
+    <div class="line"></div>
+
+    <div>
+        <p>=====TERIMA KASIH=====</p>
+        <p>=====BARANG YANG SUDAH DIBELI TIDAK BISA DIKEMBALIKAN=====</p>
+    </div>
+
+    <div class="btn-aksi">
+        <button onclick="window.print()" style="padding: 5px 10px; cursor: pointer;">🖨️ Cetak Ulang</button>
+    </div>
+
+    <script>
+        window.onload = function () {
+            window.print();
+        }
+    </script>
+</body>
+
+</html>

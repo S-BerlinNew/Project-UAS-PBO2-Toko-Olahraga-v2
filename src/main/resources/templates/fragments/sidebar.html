@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head></head>
+
 <body>
     <aside th:fragment="sidebar-fragments" class="sidebar">
         <!-- LOGO - SIDEBAR -->
         <div class="sidebar-brand">
-            Toko Olahraga<br>Amatir
+            <img th:src="@{/assets/logo.png}">
         </div>
 
 
@@ -35,4 +37,5 @@
         </div>
     </aside>
 </body>
+
 </html>

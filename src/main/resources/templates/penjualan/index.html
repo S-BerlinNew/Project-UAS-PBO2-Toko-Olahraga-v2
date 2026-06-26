@@ -30,9 +30,7 @@
                         <p style="margin-bottom: 5px;">MEMBER : 
                             <span style="color: #0284c7; font-weight: bold;">Member Aktif</span>
                         </p>
-                        <table style="width:100%; font-size:13px; color:#334155;
-                                    background:#fff; border:1px dashed #cbd5e1;
-                                    padding:8px; border-radius:4px;">
+                        <table style="width:100%; font-size:13px; color:#334155; background:#fff; border:1px dashed #cbd5e1; padding:8px; border-radius:4px;">
                             <tr>
                                 <td style="padding: 2px 0;">Nama</td>
                                 <td>: <b id="txtNamaCustomer"></b></td>
@@ -56,8 +54,6 @@
              </div>
 
              <div class="column-2">
-                <input type="hidden" id="jsonKeranjang" name="jsonKeranjang" value="[]">
-
                 <div class="input-transaksi">
                     <input type="text" id="inputKodeBarang" placeholder="Ketik kode barang...">
                     <button type="button" onclick="tambahBarangByKode()">Tambah</button>
@@ -97,17 +93,15 @@
                     </tr>
                 </table>
             </div>
-            </div>
-            </div>
 
-               <div class="metode-pembayaran" style="padding: 20px; border-left: 2px solid #ccc;">
+            <div class="metode-pembayaran" style="padding: 20px; border-left: 2px solid #ccc;">
                 <h3>💳 PENYELESAIAN TRANSAKSI</h3>
                 <hr>
                 
-                <form th:action="@{/penjualan/bayar}" method="POST" id="formTransaksi">
+                <form id="formTransaksi">
                     <div style="margin-bottom: 15px;">
                         <label style="font-weight: bold;">Metode Pembayaran:</label><br>
-                        <select name="metodePembayaran" style="width:100%; padding:8px; margin-top:5px;">
+                        <select id="selectMetodePembayaran" name="metode" style="width:100%; padding:8px; margin-top:5px;">
                             <option value="TUNAI">TUNAI (CASH)</option>
                             <option value="QRIS">QRIS / DEBIT</option>
                             <option value="TRANSFER">TRANSFER BANK</option>
@@ -116,17 +110,20 @@
 
                     <div style="margin-bottom: 15px;">
                         <label style="font-weight: bold;">Uang Tunai Diterima (Rp):</label><br>
-                        <input type="number" id="jumlahBayar" name="jumlahBayar"
+                        <input type="number" id="jumlahBayar" name="tunaiDiterima"
                             placeholder="Kosongkan jika non-tunai"
                             style="width:95%; padding:8px; margin-top:5px; font-size:16px; font-weight:bold;">
                     </div>
 
-                    <input type="hidden" id="idCustomerTerpilih" name="customer" value=""/>
-                    <input type="hidden" id="jsonKeranjang" name="jsonKeranjang"/>
-
-                    <button type="submit">👉 LANJUTKAN PEMBAYARAN</button>
+                    <input type="hidden" id="idCustomerTerpilih" name="customerId" value=""/>
+                    <input type="hidden" id="totalBayarHidden" name="totalBayar" value="0"/>
+                    <input type="hidden" id="idAkunKasir" name="idAkun" th:value="${session.idAkun != null ? session.idAkun : '1'}"/>
+                    
+                    <button id="lanjutkanPembayaran" type="button" onclick="bukaModalPembayaranFragment()">👉 LANJUTKAN PEMBAYARAN</button>
                 </form>
             </div>
+
+            <div id="tempatModalPembayaranTimbul"></div>
          </div>
     </div>
 
@@ -153,7 +150,8 @@
                         <tr th:each="c : ${listCustomer}"
                             th:data-id="${c.idCustomer}"
                             th:data-nama="${c.namaCustomer}"
-                            th:data-telepon="${c.noTelepon}"> <td th:text="${c.namaCustomer}"></td>
+                            th:data-telepon="${c.noTelepon}"> 
+                            <td th:text="${c.namaCustomer}"></td>
                             <td th:text="${c.noTelepon}"></td>
                             <td style="padding: 10px; text-align: center;">
                                 <button type="button" class="btnPilihMember">Pilih</button>
@@ -189,6 +187,8 @@
             </div>
         </div>
     </div>
+
+
     <script th:src="@{/js/penjualan.js}"></script>
 </body>
 </html>
