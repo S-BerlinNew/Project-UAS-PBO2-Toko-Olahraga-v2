@@ -8,7 +8,6 @@
 </head>
 
 <body>
-
     <div class="dashboard-wrapper">
         <!-- ===== SIDEBAR ===== -->
         <aside th:replace="~{fragments/sidebar :: sidebar-fragments(activeMenu='barang')}"></aside>
@@ -81,8 +80,6 @@
                     </tbody>
                 </table>
             </div>
-
-
 
             <!-- FORM START -->
             <div th:if="${mode != null}" class="form-card-container">

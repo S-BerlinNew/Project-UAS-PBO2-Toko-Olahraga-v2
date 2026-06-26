@@ -12,69 +12,93 @@
 
         <!-- ======MAIN CONTENT========= -->
         <main class="main-content">
-            <div class="main-header">
-                <h2>Data Customer</h2>
-                <br>
-                <a th:href="@{/customer/tambah}">+ Tambah Customer</a>
+            <header class="top-navbar">
+                <h1 class="page-title">Master Data Customer</h1>
+
+                <div class="navbar-right">
+                    <div class="notification-icon">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                            <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z" />
+                        </svg>
+                    </div>
+                    <div class="user-profile">
+                        <div class="user-info">
+                            <span class="welcome-text">Welcome</span>
+                            <span class="user-name" th:text="${session.loggedInUser}">User</span>
+                        </div>
+                        <div class="avatar-circle"></div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="action-top">
+                <a th:href="@{/customer/tambah}" class="btn-tambah">+ Tambah Customer</a>
             </div>
-            <br><br>
 
             <div class="main-data">
-                <table border="1" style="border-collapse: collapse; width: 100%; text-align: left;">
+                <table>
                     <thead>
                         <tr>
                             <th>ID Customer</th>
                             <th>Kode Customer</th>
                             <th>Nama Lengkap</th>
-                            <th>Nomor Telepom</th>
+                            <th>Nomor Telepon</th>
                             <th th:if="${session.role == 'ADMIN'}">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="c :${listCustomer}">
+                        <tr th:each="c : ${listCustomer}">
                             <td th:text="${c.idCustomer}"></td>
                             <td th:text="${c.kodeCustomer}"></td>
                             <td th:text="${c.namaCustomer}"></td>
                             <td th:text="${c.noTelepon}"></td>
                             <td th:if="${session.role == 'ADMIN'}">
-                                <a th:href="@{/customer/edit/{id}(id=${c.idCustomer})}">Edit</a>
-                                <a th:href="@{/customer/hapus/{id}(id=${c.idCustomer})}" onclick="return confirm('Yakin ingin menghapus customer ini?')">Hapus</a>
+                                <div class="action-buttons">
+                                    <a th:href="@{/customer/edit/{id}(id=${c.idCustomer})}">Edit</a>
+                                    <a th:href="@{/customer/hapus/{id}(id=${c.idCustomer})}" onclick="return confirm('Yakin ingin menghapus customer ini?')">Hapus</a>
+                                </div>
                             </td>
                         </tr>
                         <tr th:if="${#lists.isEmpty(listCustomer)}">
-                            <td colspan="11" style="text-align: center; color: red; padding: 10px;">Belum ada data customer!</td>
+                            <td colspan="5" class="empty-msg">Belum ada data customer!</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
-            <!-- FORM START-->
-            <div th:if="${mode != null}">
-                <div>
-                    <h3 th:text="${mode == 'tambah' ? 'Form Tambah Customer Baru' : 'Form Edit Data Customer'}">Form Customer</h3>
-                </div>
+            <!-- FORM START -->
+            <div th:if="${mode != null}" class="form-card-container">
+                <div class="form-card-glass">
+                    <div class="form-header-glass">
+                        <h2 th:text="${mode == 'tambah' ? 'Tambah Customer' : 'Edit Customer'}">Tambah Customer</h2>
+                        <p>Silakan isi data customer di bawah ini.</p>
+                    </div>
 
-                <div>
-                    <form th:action="${mode == 'tambah' ? '/customer/simpan' : '/customer/update'}" th:object="${customer}" method="POST">
+                    <form th:action="${mode == 'tambah' ? '/customer/simpan' : '/customer/update'}" th:object="${customer}" method="POST" class="form-body-glass">
                         <input type="hidden" th:if="${mode == 'edit'}" th:field="*{idCustomer}" />
-                        <p>
-                            <label>Kode Customer</label>
-                            <input type="text" th:field="*{kodeCustomer}" th:readonly="${mode == 'edit'}" required />
-                        </p>
 
-                        <p>
-                            <label>Nama Lengkap:</label><br>
-                            <input type="text" th:field="*{namaCustomer}" required />
-                        </p>
+                        <div class="form-row-glass">
+                            <div class="form-group-glass">
+                                <label>Kode Customer</label>
+                                <input type="text" th:field="*{kodeCustomer}" th:readonly="${mode == 'edit'}" placeholder="Kode Customer" required />
+                            </div>
+                            <div class="form-group-glass">
+                                <label>Nama Lengkap</label>
+                                <input type="text" th:field="*{namaCustomer}" placeholder="Nama Lengkap" required />
+                            </div>
+                        </div>
 
-                        <p>
-                            <label>Nomor Telepon:</label><br>
-                            <input type="number" step="any" th:field="*{noTelepon}" required />
-                        </p>
+                        <div class="form-row-glass">
+                            <div class="form-group-glass">
+                                <label>Nomor Telepon</label>
+                                <input type="number" step="any" th:field="*{noTelepon}" placeholder="Nomor Telepon" required />
+                            </div>
+                        </div>
 
-                        <br>
-                        <button type="submit">💾 Simpan Data</button>
-                        <a th:href="@{/customer}">❌ Batal</a>
+                        <div class="form-actions-glass">
+                            <button type="submit" class="btn-submit-glass">Simpan Data</button>
+                            <a th:href="@{/customer}" class="btn-cancel-glass">Batal</a>
+                        </div>
                     </form>
                 </div>
             </div>
