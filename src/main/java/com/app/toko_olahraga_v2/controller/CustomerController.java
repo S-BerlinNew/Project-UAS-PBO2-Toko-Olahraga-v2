@@ -11,16 +11,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.dao.DataIntegrityViolationException;
 
 @Controller
 @RequestMapping("/customer")
 public class CustomerController {
 
-    private CustomerService customerService;
+    private final CustomerService customerService;
 
     public CustomerController(CustomerService customerService) {
         this.customerService = customerService;
@@ -36,12 +36,19 @@ public class CustomerController {
         return ResponseEntity.ok(customer); 
     }
     
-
     @GetMapping
-    public String index(Model model) {
-        model.addAttribute("listCustomer", customerService.getAll());
+    public String index(
+            @org.springframework.web.bind.annotation.RequestParam(required = false) String keyword,
+            @org.springframework.web.bind.annotation.RequestParam(required = false, defaultValue = "desc") String sort,
+            Model model) {
+        
+        model.addAttribute("listCustomer", customerService.getAll(keyword, sort));
         model.addAttribute("customer", new Customer());
         model.addAttribute("mode", null);
+        
+        // Return back to view to keep the form state
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("sort", sort);
 
         return "customer/index";
     }
@@ -56,8 +63,10 @@ public class CustomerController {
     }
 
     @PostMapping("/simpan")
-    public String simpan(@ModelAttribute Customer customer) {
+    public String simpan(@ModelAttribute Customer customer, RedirectAttributes redirectAttributes) {
         customerService.tambahCustomer(customer);
+        redirectAttributes.addFlashAttribute("pesan", "Data customer berhasil ditambahkan!");
+        redirectAttributes.addFlashAttribute("tipePesan", "success");
         return "redirect:/customer";
     }
 
@@ -73,17 +82,23 @@ public class CustomerController {
         }
 
     @PostMapping("/update")
-    public String update(@ModelAttribute Customer customer) {
+    public String update(@ModelAttribute Customer customer, RedirectAttributes redirectAttributes) {
         customerService.tambahCustomer(customer);
-        
+        redirectAttributes.addFlashAttribute("pesan", "Data customer berhasil diperbarui!");
+        redirectAttributes.addFlashAttribute("tipePesan", "edit");
         return "redirect:/customer";
     }
 
-
     @GetMapping("/hapus/{idCustomer}")
-    public String hapus(@PathVariable int idCustomer) {
-        customerService.hapusCustomer(idCustomer);
-        
+    public String hapus(@PathVariable int idCustomer, RedirectAttributes redirectAttributes) {
+        try {
+            customerService.hapusCustomer(idCustomer);
+            redirectAttributes.addFlashAttribute("pesan", "Data customer berhasil dihapus!");
+            redirectAttributes.addFlashAttribute("tipePesan", "delete");
+        } catch (DataIntegrityViolationException e) {
+            redirectAttributes.addFlashAttribute("pesan", "Gagal menghapus: Customer sudah ada di transaksi!");
+            redirectAttributes.addFlashAttribute("tipePesan", "delete");
+        }
         return "redirect:/customer";
     }
     

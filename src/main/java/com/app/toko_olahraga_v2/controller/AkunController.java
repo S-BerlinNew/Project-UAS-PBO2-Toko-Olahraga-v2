@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.dao.DataIntegrityViolationException;
 
 @Controller
 @RequestMapping("/kelola-akun")
@@ -25,9 +26,17 @@ public class AkunController {
 
     
     @GetMapping()
-    public String kelolaAkunPage(Model model) {
-        model.addAttribute("listAkun", authService.getAll());
+    public String kelolaAkunPage(
+            @org.springframework.web.bind.annotation.RequestParam(required = false) String keyword,
+            @org.springframework.web.bind.annotation.RequestParam(required = false, defaultValue = "desc") String sort,
+            Model model) {
+        
+        model.addAttribute("listAkun", authService.getAll(keyword, sort));
         model.addAttribute("akun", new Akun()); 
+        
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("sort", sort);
+        
         return "akun/index"; 
     }
 
@@ -40,8 +49,10 @@ public class AkunController {
     }
 
     @PostMapping("/simpan")
-    public String simpan(@ModelAttribute Akun akun) {
+    public String simpan(@ModelAttribute Akun akun, RedirectAttributes redirectAttributes) {
         authService.tambahAkun(akun);
+        redirectAttributes.addFlashAttribute("pesan", "Data akun berhasil ditambahkan!");
+        redirectAttributes.addFlashAttribute("tipePesan", "success");
         return "redirect:/kelola-akun";
     }
 
@@ -58,14 +69,23 @@ public class AkunController {
     }
 
     @PostMapping("/update")
-    public String update(@ModelAttribute Akun akun) {
+    public String update(@ModelAttribute Akun akun, RedirectAttributes redirectAttributes) {
         authService.tambahAkun(akun);
+        redirectAttributes.addFlashAttribute("pesan", "Data akun berhasil diperbarui!");
+        redirectAttributes.addFlashAttribute("tipePesan", "edit");
         return "redirect:/kelola-akun";
     }
     
     @GetMapping("/hapus/{idAkun}")
-    public String hapus(@PathVariable int idAkun) {
-        authService.hapusAkun(idAkun);
+    public String hapus(@PathVariable int idAkun, RedirectAttributes redirectAttributes) {
+        try {
+            authService.hapusAkun(idAkun);
+            redirectAttributes.addFlashAttribute("pesan", "Data akun berhasil dihapus!");
+            redirectAttributes.addFlashAttribute("tipePesan", "delete");
+        } catch (DataIntegrityViolationException e) {
+            redirectAttributes.addFlashAttribute("pesan", "Gagal menghapus: Akun sedang digunakan!");
+            redirectAttributes.addFlashAttribute("tipePesan", "delete");
+        }
         return "redirect:/kelola-akun";
     }
 }

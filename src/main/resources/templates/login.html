@@ -4,40 +4,53 @@
 <head>
     <meta charset="UTF-8">
     <title>Login - Toko Olahraga</title>
-    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/login.css}">
 </head>
 
 <body>
 
-    <div class="login-bg">
-        <div class="login-card">
-
-            <h2>Toko Olahraga Amatir</h2>
-            <p class="subtitle">Silakan login untuk melanjutkan</p>
-
-            <div class="error-msg" th:if="${errorPopUp}" th:text="${errorPopUp}">
-                Username atau password salah!
+<div class="login-page">
+    <div class="login-card">
+        <div class="logo-container">
+            <h1 class="login-logo-text">LOGIN</h1>
+        </div>
+        
+        <form th:action="@{/login}" method="post" style="width: 100%;">
+            
+            <div class="error-msg" th:if="${errorPopUp}">
+                <span th:text="${errorPopUp}">Username atau password salah!</span>
             </div>
 
-            <form th:action="@{/login}" method="post">
-
-                <div class="form-group">
-                    <label for="usernameInput">Username</label>
-                    <input type="text" id="usernameInput" name="username" placeholder="Masukkan username"
-                        autocomplete="username" required>
+            <div class="input-group">
+                <span class="input-icon">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="#fff">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                    </svg>
+                </span>
+                <div class="floating-label-container">
+                    <input type="text" id="username" name="username" placeholder=" " autocomplete="username" required>
+                    <label for="username">Username</label>
                 </div>
-
-                <div class="form-group">
-                    <label for="passwordInput">Password</label>
-                    <input type="password" id="passwordInput" name="password" placeholder="Masukkan password"
-                        autocomplete="current-password" required>
+            </div>
+            
+            <div class="input-group">
+                <span class="input-icon">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="#fff">
+                        <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+                    </svg>
+                </span>
+                <div class="floating-label-container">
+                    <input type="password" id="password" name="password" placeholder=" " autocomplete="current-password" required>
+                    <label for="password">Password</label>
                 </div>
+            </div>
 
-                <button type="submit" class="btn-login">Login</button>
-            </form>
-
-        </div>
+            <button type="submit" class="btn-login">LOGIN</button>
+        </form>
     </div>
+
+</div>
 
 </body>
 

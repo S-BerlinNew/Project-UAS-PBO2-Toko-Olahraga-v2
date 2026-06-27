@@ -19,7 +19,20 @@ public class BarangService {
     
     // ========AMBIL SEMUA BARANG========
     public List<Barang> getAll() {
-        return barangRepository.findAll();
+        return barangRepository.findAll(org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "idBarang"));
+    }
+
+    // ========AMBIL BARANG DENGAN PENCARIAN & SORTING========
+    public List<Barang> getAll(String keyword, String sortDirection) {
+        org.springframework.data.domain.Sort.Direction direction = 
+            "asc".equalsIgnoreCase(sortDirection) ? org.springframework.data.domain.Sort.Direction.ASC : org.springframework.data.domain.Sort.Direction.DESC;
+        
+        org.springframework.data.domain.Sort sort = org.springframework.data.domain.Sort.by(direction, "idBarang");
+        
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            return barangRepository.searchBarang(keyword, sort);
+        }
+        return barangRepository.findAll(sort);
     }
 
     // ========AMBIL BARANG AKTIF (STATUS=1)========

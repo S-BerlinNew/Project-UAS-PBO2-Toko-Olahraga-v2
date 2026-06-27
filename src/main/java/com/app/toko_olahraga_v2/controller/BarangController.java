@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import com.app.toko_olahraga_v2.model.Barang;
 import com.app.toko_olahraga_v2.service.BarangService;
@@ -24,11 +26,18 @@ public class BarangController {
 
 
     @GetMapping
-    public String index(Model model) {
-        // model.addAttribute("listBarang", barangService.getAll());
-        model.addAttribute("listBarang", barangService.getAll());
+    public String index(
+            @org.springframework.web.bind.annotation.RequestParam(required = false) String keyword,
+            @org.springframework.web.bind.annotation.RequestParam(required = false, defaultValue = "desc") String sort,
+            Model model) {
+        
+        model.addAttribute("listBarang", barangService.getAll(keyword, sort));
         model.addAttribute("barang", new Barang()); 
         model.addAttribute("mode", null);
+        
+        // Return back to view to keep the form state
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("sort", sort);
 
         return "barang/index";
     }
@@ -44,8 +53,10 @@ public class BarangController {
     }
 
     @PostMapping("/simpan")
-    public String simpan(@ModelAttribute Barang barang) {
+    public String simpan(@ModelAttribute Barang barang, RedirectAttributes redirectAttributes) {
         barangService.tambahBarang(barang);
+        redirectAttributes.addFlashAttribute("pesan", "Data barang berhasil ditambahkan!");
+        redirectAttributes.addFlashAttribute("tipePesan", "success");
         return "redirect:/barang";
     }
 
@@ -61,14 +72,23 @@ public class BarangController {
     }
 
     @PostMapping("/update")
-    public String update(@ModelAttribute Barang barang) {
+    public String update(@ModelAttribute Barang barang, RedirectAttributes redirectAttributes) {
         barangService.tambahBarang(barang);
+        redirectAttributes.addFlashAttribute("pesan", "Data barang berhasil diperbarui!");
+        redirectAttributes.addFlashAttribute("tipePesan", "edit");
         return "redirect:/barang";
     }
 
     @GetMapping("/hapus/{idBarang}")
-    public String hapus(@PathVariable int idBarang) {
-        barangService.hapusBarang(idBarang);
+    public String hapus(@PathVariable int idBarang, RedirectAttributes redirectAttributes) {
+        try {
+            barangService.hapusBarang(idBarang);
+            redirectAttributes.addFlashAttribute("pesan", "Data barang berhasil dihapus!");
+            redirectAttributes.addFlashAttribute("tipePesan", "delete");
+        } catch (DataIntegrityViolationException e) {
+            redirectAttributes.addFlashAttribute("pesan", "Gagal menghapus: Barang sudah ada di transaksi!");
+            redirectAttributes.addFlashAttribute("tipePesan", "delete");
+        }
         return "redirect:/barang";
     }
 }

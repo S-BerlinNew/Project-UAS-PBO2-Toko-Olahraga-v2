@@ -239,9 +239,9 @@ function renderTabelKeranjang() {
         tr.innerHTML = `
             <td><b>${item.namaBarang}</b> <br><small style="color:#666">${item.kodeBarang}</small></td>
             <td>Rp ${item.hargaJual.toLocaleString('id-ID')}</td>
-            <td><input type="number" value="${item.qty}" min="1" max="${item.stokMax}" style="width: 60px; text-align: center;" onchange="updateQtyKeranjang(${index}, this.value)"></td>
+            <td><input type="number" value="${item.qty}" min="1" max="${item.stokMax}" style="background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; padding: 6px; border-radius: 4px; width: 60px; text-align: center; outline: none;" onchange="updateQtyKeranjang(${index}, this.value)"></td>
             <td>${item.brand}</td>
-            <td><input type="number" value="${item.diskonPersen}" min="0" max="100" style="width: 50px; text-align: center;" onchange="updateDiskonKeranjang(${index}, this.value)"> %</td>
+            <td style="white-space: nowrap;"><input type="number" value="${item.diskonPersen}" min="0" max="100" style="background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; padding: 6px; border-radius: 4px; width: 60px; text-align: center; outline: none;" onchange="updateDiskonKeranjang(${index}, this.value)"> <span style="color: #cbd5e1;">%</span></td>
             <td><b>Rp ${subtotal.toLocaleString('id-ID')}</b></td>
             <td><button type="button" onclick="hapusItemKeranjang(${index})" style="background: #ef4444; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer;">Hapus</button></td>
         `;
@@ -387,8 +387,9 @@ function handleMetodePembayaranChange() {
             } else {
                 inputJumlahBayar.disabled = true;
                 inputJumlahBayar.value = "";
-                inputJumlahBayar.placeholder = "Terkunci (Pembayaran Non-Tunai)";
-                inputJumlahBayar.style.backgroundColor = "#e2e8f0"; // Warna abu-abu terkunci
+                inputJumlahBayar.placeholder = "Terkunci (Non-Tunai)";
+                inputJumlahBayar.style.backgroundColor = "rgba(255,255,255,0.05)"; // Gelap terkunci
+                inputJumlahBayar.style.cursor = "not-allowed";
             }
         };
 

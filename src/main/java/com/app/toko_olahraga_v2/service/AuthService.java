@@ -17,7 +17,20 @@ public class AuthService {
 
     // ======AMBIL SEMUA DATA AKUN======
     public List<Akun> getAll() {
-        return akunRepository.findAll();
+        return akunRepository.findAll(org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "idAkun"));
+    }
+
+    // ======AMBIL SEMUA DATA AKUN DENGAN PENCARIAN & SORTING======
+    public List<Akun> getAll(String keyword, String sortDirection) {
+        org.springframework.data.domain.Sort.Direction direction = 
+            "asc".equalsIgnoreCase(sortDirection) ? org.springframework.data.domain.Sort.Direction.ASC : org.springframework.data.domain.Sort.Direction.DESC;
+        
+        org.springframework.data.domain.Sort sort = org.springframework.data.domain.Sort.by(direction, "idAkun");
+        
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            return akunRepository.searchAkun(keyword, sort);
+        }
+        return akunRepository.findAll(sort);
     }
 
     // =======AMBIL AKUN ID=======
