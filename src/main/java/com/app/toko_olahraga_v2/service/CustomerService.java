@@ -18,7 +18,20 @@ public class CustomerService {
 
     // =======AMBIL SEMUA DATA CUSTOMER========
     public List<Customer> getAll() {
-        return customerRepository.findAll();
+        return customerRepository.findAll(org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC, "idCustomer"));
+    }
+
+    // =======AMBIL DATA CUSTOMER DENGAN PENCARIAN & SORTING========
+    public List<Customer> getAll(String keyword, String sortDirection) {
+        org.springframework.data.domain.Sort.Direction direction = 
+            "asc".equalsIgnoreCase(sortDirection) ? org.springframework.data.domain.Sort.Direction.ASC : org.springframework.data.domain.Sort.Direction.DESC;
+        
+        org.springframework.data.domain.Sort sort = org.springframework.data.domain.Sort.by(direction, "idCustomer");
+        
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            return customerRepository.searchCustomer(keyword, sort);
+        }
+        return customerRepository.findAll(sort);
     }
 
     // =======AMBIL CUSTOMER NAMA=========

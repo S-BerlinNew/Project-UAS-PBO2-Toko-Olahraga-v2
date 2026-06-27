@@ -11,18 +11,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.dao.DataIntegrityViolationException;
 
-
 @Controller
 @RequestMapping("/customer")
 public class CustomerController {
 
-    private CustomerService customerService;
+    private final CustomerService customerService;
 
     public CustomerController(CustomerService customerService) {
         this.customerService = customerService;
@@ -38,12 +36,19 @@ public class CustomerController {
         return ResponseEntity.ok(customer); 
     }
     
-
     @GetMapping
-    public String index(Model model) {
-        model.addAttribute("listCustomer", customerService.getAll());
+    public String index(
+            @org.springframework.web.bind.annotation.RequestParam(required = false) String keyword,
+            @org.springframework.web.bind.annotation.RequestParam(required = false, defaultValue = "desc") String sort,
+            Model model) {
+        
+        model.addAttribute("listCustomer", customerService.getAll(keyword, sort));
         model.addAttribute("customer", new Customer());
         model.addAttribute("mode", null);
+        
+        // Return back to view to keep the form state
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("sort", sort);
 
         return "customer/index";
     }
@@ -83,7 +88,6 @@ public class CustomerController {
         redirectAttributes.addFlashAttribute("tipePesan", "edit");
         return "redirect:/customer";
     }
-
 
     @GetMapping("/hapus/{idCustomer}")
     public String hapus(@PathVariable int idCustomer, RedirectAttributes redirectAttributes) {

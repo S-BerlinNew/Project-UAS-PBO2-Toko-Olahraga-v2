@@ -26,11 +26,18 @@ public class BarangController {
 
 
     @GetMapping
-    public String index(Model model) {
-        // model.addAttribute("listBarang", barangService.getAll());
-        model.addAttribute("listBarang", barangService.getAll());
+    public String index(
+            @org.springframework.web.bind.annotation.RequestParam(required = false) String keyword,
+            @org.springframework.web.bind.annotation.RequestParam(required = false, defaultValue = "desc") String sort,
+            Model model) {
+        
+        model.addAttribute("listBarang", barangService.getAll(keyword, sort));
         model.addAttribute("barang", new Barang()); 
         model.addAttribute("mode", null);
+        
+        // Return back to view to keep the form state
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("sort", sort);
 
         return "barang/index";
     }
