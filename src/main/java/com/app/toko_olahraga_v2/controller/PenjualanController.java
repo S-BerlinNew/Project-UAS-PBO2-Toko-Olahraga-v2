@@ -178,10 +178,16 @@ public class PenjualanController {
             // ✅ PERUBAHAN: Simpan hasil transaksi ke variabel agar bisa ambil ID-nya
             Penjualan hasil = penjualanService.prosesTransaksi(penjualan, listKeranjang);
 
-            // ✅ PERUBAHAN: Return ID penjualan agar frontend bisa buka halaman nota
+            // ✅ PERUBAHAN: Return data lengkap untuk ditampilkan di popup nota
+            String namaKasir   = hasil.getAkun() != null ? hasil.getAkun().getUsername() : "Admin";
+            String namaCustomer = hasil.getCustomer() != null ? hasil.getCustomer().getNamaCustomer() : "-";
+
             return ResponseEntity.ok(Map.of(
                 "idPenjualan", hasil.getIdPenjualan(),
-                "pesan", "Transaksi berhasil disimpan."
+                "noNota",      hasil.getNoNota(),
+                "kasir",       namaKasir,
+                "customer",    namaCustomer,
+                "pesan",       "Transaksi berhasil disimpan."
             ));
         } catch (Exception e) {
             e.printStackTrace();
