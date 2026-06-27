@@ -71,7 +71,7 @@
                             <td th:text="${c.noTelepon}"></td>
                             <td th:if="${session.role == 'ADMIN'}">
                                 <div class="action-buttons">
-                                    <a th:href="@{/customer/edit/{id}(id=${c.idCustomer})}">Edit</a>
+                                    <a th:href="@{/customer/edit/{id}(id=${c.idCustomer})}">Edit</a> | 
                                     <a href="#hapus" th:onclick="'showDeleteConfirm(' + ${c.idCustomer} + ')'">Hapus</a>
                                 </div>
                             </td>

@@ -24,10 +24,19 @@ public class LaporanController {
             @RequestParam(value = "tglMulai", required = false) String tglMulai,
             @RequestParam(value = "tglSelesai", required = false) String tglSelesai,
             @RequestParam(value = "metode", required = false) String metode,
+            @RequestParam(value = "sort", required = false, defaultValue = "desc") String sort,
             Model model) {
 
         // Ambil data berdasarkan filter yang diinput user
         List<Penjualan> listPenjualan = laporanService.getLaporanTerFilter(tglMulai, tglSelesai, metode);
+        
+        // Lakukan sorting data
+        if ("asc".equalsIgnoreCase(sort)) {
+            listPenjualan.sort((p1, p2) -> p1.getTanggal().compareTo(p2.getTanggal()));
+        } else {
+            // desc by default
+            listPenjualan.sort((p1, p2) -> p2.getTanggal().compareTo(p1.getTanggal()));
+        }
 
         model.addAttribute("listPenjualan", listPenjualan);
         model.addAttribute("totalOmset", laporanService.hitungTotalOmset(listPenjualan));
@@ -37,6 +46,7 @@ public class LaporanController {
         model.addAttribute("tglMulaiParam", tglMulai);
         model.addAttribute("tglSelesaiParam", tglSelesai);
         model.addAttribute("metodeParam", metode);
+        model.addAttribute("sortParam", sort);
 
         return "laporan/index";
     }

@@ -82,7 +82,7 @@
                             <td th:text="${b.status}"></td>
                             <td th:if="${session.role == 'ADMIN'}">
                                 <div class="action-buttons">
-                                    <a th:href="@{/barang/edit/{id}(id=${b.idBarang})}">Edit</a>
+                                    <a th:href="@{/barang/edit/{id}(id=${b.idBarang})}">Edit</a> | 
                                     <a href="#hapus" th:onclick="'showDeleteConfirm(' + ${b.idBarang} + ')'">Hapus</a>
                                 </div>
                             </td>

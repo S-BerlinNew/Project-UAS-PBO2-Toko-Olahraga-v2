@@ -5,6 +5,148 @@
     <meta charset="UTF-8">
     <title>Laporan - Toko Olahraga</title>
     <link rel="stylesheet" th:href="@{/css/main.css}">
+    <style>
+        /* Modern Glassmorphism Adjustments */
+        .glass-filter-box {
+            background: rgba(13, 25, 38, 0.6);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            margin-bottom: 25px;
+        }
+
+        .dark-input {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(77, 194, 248, 0.3);
+            color: #fff;
+            border-radius: 6px;
+            padding: 10px;
+            outline: none;
+            transition: all 0.3s ease;
+            color-scheme: dark;
+        }
+
+        .dark-input:focus {
+            border-color: #4dc2f8;
+            box-shadow: 0 0 10px rgba(77, 194, 248, 0.2);
+        }
+
+        /* Color Scheme for Inputs */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            cursor: pointer;
+        }
+
+        select.dark-input {
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url('data:image/svg+xml;charset=UTF-8,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%234dc2f8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3E%3Cpolyline points="6 9 12 15 18 9"%3E%3C/polyline%3E%3C/svg%3E');
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 16px;
+            padding-right: 40px;
+            cursor: pointer;
+        }
+
+        select.dark-input option {
+            background: #0d1926;
+            color: #fff;
+        }
+
+        /* Summary Cards Glowing Effect */
+        .card-omset {
+            flex: 1;
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(21, 128, 61, 0.25) 100%);
+            border: 1px solid rgba(34, 197, 94, 0.4);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .card-omset:hover {
+            box-shadow: 0 15px 40px rgba(34, 197, 94, 0.25);
+        }
+
+        .card-transaksi {
+            flex: 1;
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(126, 34, 206, 0.25) 100%);
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(168, 85, 247, 0.15);
+            transition: all 0.3s ease;
+        }
+
+        .card-transaksi:hover {
+            box-shadow: 0 15px 40px rgba(168, 85, 247, 0.25);
+        }
+
+        /* Print Media Query */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+            }
+
+            aside,
+            .glass-filter-box,
+            .btn-cetak,
+            .summary-cards {
+                display: none !important;
+                /* Hide sidebar, filter, buttons, cards on print */
+            }
+
+            .dashboard-wrapper {
+                display: block !important;
+                background: white !important;
+            }
+
+            .main-content {
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .kop-surat {
+                display: block !important;
+                text-align: center;
+                margin-bottom: 20px;
+                color: black;
+            }
+
+            .kop-surat h2 {
+                color: black !important;
+                margin: 10px 0 5px 0;
+            }
+
+            .kop-surat p {
+                margin: 0;
+                color: #333;
+            }
+
+            table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+            }
+
+            table th,
+            table td {
+                border: 1px solid black !important;
+                background: white !important;
+                color: black !important;
+                padding: 8px !important;
+            }
+        }
+
+        /* Hide Kop Surat on Screen */
+        @media screen {
+            .kop-surat {
+                display: none;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -15,32 +157,46 @@
         <!-- ======= MAIN CONTENT ======== -->
         <main class="main-content">
             <div class="kop-surat">
-                <img th:src="@{/assets/logo.png}">
                 <h2>LAPORAN REKAPITULASI TRANSAKSI PENJUALAN</h2>
                 <p>Sistem Informasi POS Toko Olahraga v2</p>
                 <hr style="border: 1px solid #000; margin-top: 10px;">
             </div>
 
-            <div class="filter-box"
-                style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 20px;">
+            <div class="main-header"
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h1 style="color: #fff; margin: 0; font-size: 24px;">Laporan Transaksi</h1>
+                <button type="button" class="btn-cetak" onclick="window.print()"
+                    style="padding: 10px 20px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border: none; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4); transition: all 0.3s;">
+                    🖨️ Cetak Laporan (PDF)
+                </button>
+            </div>
+
+            <div class="glass-filter-box">
                 <form th:action="@{/laporan}" method="GET"
-                    style="display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
+                    style="display: flex; gap: 20px; align-items: flex-end; flex-wrap: wrap;">
 
-                    <div style="display: flex; flex-direction: column; gap: 5px;">
-                        <label style="font-weight: bold; font-size: 14px; color: #4b5563;">Tanggal Mulai:</label>
-                        <input type="date" name="tglMulai" th:value="${tglMulaiParam}"
-                            style="padding: 8px; border: 1px solid #d1d5db; border-radius: 4px;">
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <label style="font-weight: bold; font-size: 14px; color: #94a3b8;">Tanggal Mulai:</label>
+                        <input type="date" name="tglMulai" th:value="${tglMulaiParam}" class="dark-input">
                     </div>
 
-                    <div style="display: flex; flex-direction: column; gap: 5px;">
-                        <label style="font-weight: bold; font-size: 14px; color: #4b5563;">Tanggal Selesai:</label>
-                        <input type="date" name="tglSelesai" th:value="${tglSelesaiParam}"
-                            style="padding: 8px; border: 1px solid #d1d5db; border-radius: 4px;">
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <label style="font-weight: bold; font-size: 14px; color: #94a3b8;">Tanggal Selesai:</label>
+                        <input type="date" name="tglSelesai" th:value="${tglSelesaiParam}" class="dark-input">
                     </div>
 
-                    <div style="display: flex; flex-direction: column; gap: 5px; min-width: 180px;">
-                        <label style="font-weight: bold; font-size: 14px; color: #4b5563;">Metode Pembayaran:</label>
-                        <select name="metode" style="padding: 8px; border: 1px solid #d1d5db; border-radius: 4px;">
+                    <div style="display: flex; flex-direction: column; gap: 8px; min-width: 150px;">
+                        <label style="font-weight: bold; font-size: 14px; color: #94a3b8;">Urutkan:</label>
+                        <select name="sort" class="dark-input">
+                            <option value="desc" th:selected="${sortParam == 'desc' or sortParam == null}">Terbaru
+                            </option>
+                            <option value="asc" th:selected="${sortParam == 'asc'}">Terlama</option>
+                        </select>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 8px; min-width: 200px;">
+                        <label style="font-weight: bold; font-size: 14px; color: #94a3b8;">Metode Pembayaran:</label>
+                        <select name="metode" class="dark-input">
                             <option value="SEMUA" th:selected="${metodeParam == 'SEMUA'}">-- Semua Metode --</option>
                             <option value="TUNAI" th:selected="${metodeParam == 'TUNAI'}">TUNAI (CASH)</option>
                             <option value="QRIS" th:selected="${metodeParam == 'QRIS'}">QRIS / DEBIT</option>
@@ -50,90 +206,120 @@
 
                     <div style="display: flex; gap: 10px;">
                         <button type="submit"
-                            style="padding: 9px 20px; background: #3b82f6; color: white; border: none; font-weight: bold; border-radius: 4px; cursor: pointer;">
-                            🔍 Cari Data
+                            style="padding: 10px 25px; background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); color: white; border: none; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4); transition: all 0.3s;">
+                            Cari Data
                         </button>
                         <a th:href="@{/laporan}"
-                            style="padding: 9px 20px; background: #6b7280; color: white; text-decoration: none; font-weight: bold; border-radius: 4px; font-size: 14px; text-align: center;">
-                            🔄 Reset
+                            style="padding: 10px 25px; background: rgba(255, 255, 255, 0.1); color: white; border: 1px solid rgba(255,255,255,0.2); text-decoration: none; font-weight: bold; border-radius: 8px; text-align: center; transition: all 0.3s;">
+                            Reset
                         </a>
                     </div>
                 </form>
             </div>
 
-            <div class="main-header" style="display: flex; justify-content: space-between; align-items: center;">
-                <button type="button" class="btn-cetak" onclick="window.print()">🖨️ Cetak Laporan (PDF)</button>
-            </div>
-
-            <div class="main-data">
-                <div class="summary-cards" style="display: flex; gap: 20px; margin-bottom: 25px; margin-top: 15px;">
-                    <div class="card">
-                        <h3 style="margin: 0; font-size: 14px; text-transform: uppercase; opacity: 0.8;">💰 Total Omset
-                            Penjualan</h3>
-                        <p style="margin: 10px 0 0 0; font-size: 28px; font-weight: bold;">
+            <div class="main-data" style="margin-top: 0; border: none; background: transparent; padding: 0;">
+                <div class="summary-cards" style="display: flex; gap: 20px; margin-bottom: 25px;">
+                    <div class="card-omset">
+                        <h3
+                            style="margin: 0; font-size: 14px; text-transform: uppercase; color: #86efac; letter-spacing: 1px;">
+                            Total Omset Penjualan</h3>
+                        <p
+                            style="margin: 10px 0 0 0; font-size: 32px; font-weight: bold; color: #4ade80; text-shadow: 0 0 20px rgba(74, 222, 128, 0.4);">
                             Rp <span
                                 th:text="${totalOmset != null ? #numbers.formatDecimal(totalOmset, 0, 'POINT', 0, 'COMMA') : '0'}">0</span>
                         </p>
                     </div>
-                    <div class="card">
-                        <h3 style="margin: 0; font-size: 14px; text-transform: uppercase; opacity: 0.8;">🛒 Total
-                            Transaksi</h3>
-                        <p style="margin: 10px 0 0 0; font-size: 28px; font-weight: bold;">
+                    <div class="card-transaksi">
+                        <h3
+                            style="margin: 0; font-size: 14px; text-transform: uppercase; color: #d8b4fe; letter-spacing: 1px;">
+                            Total Transaksi</h3>
+                        <p
+                            style="margin: 10px 0 0 0; font-size: 32px; font-weight: bold; color: #c084fc; text-shadow: 0 0 20px rgba(192, 132, 252, 0.4);">
                             <span th:text="${listPenjualan != null ? #lists.size(listPenjualan) : '0'}">0</span>
                             Transaksi
                         </p>
                     </div>
                 </div>
 
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Id Penjualan</th>
-                            <th>Akun Kasir</th>
-                            <th>Nomor Nota</th>
-                            <th>Tanggal</th>
-                            <th>Qty</th>
-                            <th>Metode Pembayaran</th>
-                            <th>Total Bayar</th>
-                            <th>Jumlah Bayar</th>
-                            <th>Uang Tunai</th>
-                            <th>Uang Kembali</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="p : ${listPenjualan}">
-                            <td th:text="${p.idPenjualan}"></td>
-                            <td th:text="${p.akun != null ? p.akun.username : 'Admin'}"></td>
-                            <td th:text="${p.noNota != null ? p.noNota : '-'}">
-                            </td>
-                            <td th:text="${p.tanggal != null ? #temporals.format(p.tanggal, 'dd-MM-yyyy HH:mm') : '-'}">
-                            </td>
-                            <td
-                                th:text="${p.detailPenjualan != null ? #aggregates.sum(p.detailPenjualan.![qty]) : '0'}">
-                            </td>
-                            <td th:text="${p.metodePembayaran != null ? p.metodePembayaran : '-'}"></td>
-                            <td>
-                                <b>Rp <span
-                                        th:text="${p.totalBayar != null ? #numbers.formatDecimal(p.totalBayar, 0, 'POINT', 0, 'COMMA') : '0'}"></span></b>
-                            </td>
-                            <td
-                                th:text="${p.jumlahBayar != null ? #numbers.formatDecimal(p.jumlahBayar, 0, 'POINT', 0, 'COMMA') : '0'}">
-                            </td>
-                            <td
-                                th:text="${p.uangTunai != null ? #numbers.formatDecimal(p.uangTunai, 0, 'POINT', 0, 'COMMA') : '0'}">
-                            </td>
-                            <td
-                                th:text="${p.uangKembali != null ? #numbers.formatDecimal(p.uangKembali, 0, 'POINT', 0, 'COMMA') : '0'}">
-                            </td>
-                        </tr>
+                <div class="table-wrapper-glass"
+                    style="padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); background: rgba(13, 25, 38, 0.6); backdrop-filter: blur(15px); width: 100%; max-width: 100%; overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th
+                                    style="background: rgba(0,0,0,0.3); color: #4dc2f8; padding: 15px; text-align: left; border-bottom: 2px solid rgba(77, 194, 248, 0.3);">
+                                    No</th>
+                                <th
+                                    style="background: rgba(0,0,0,0.3); color: #4dc2f8; padding: 15px; text-align: left; border-bottom: 2px solid rgba(77, 194, 248, 0.3);">
+                                    Kasir</th>
+                                <th
+                                    style="background: rgba(0,0,0,0.3); color: #4dc2f8; padding: 15px; text-align: left; border-bottom: 2px solid rgba(77, 194, 248, 0.3);">
+                                    Nomor Nota</th>
+                                <th
+                                    style="background: rgba(0,0,0,0.3); color: #4dc2f8; padding: 15px; text-align: left; border-bottom: 2px solid rgba(77, 194, 248, 0.3);">
+                                    Tanggal</th>
+                                <th
+                                    style="background: rgba(0,0,0,0.3); color: #4dc2f8; padding: 15px; text-align: center; border-bottom: 2px solid rgba(77, 194, 248, 0.3);">
+                                    Qty</th>
+                                <th
+                                    style="background: rgba(0,0,0,0.3); color: #4dc2f8; padding: 15px; text-align: center; border-bottom: 2px solid rgba(77, 194, 248, 0.3);">
+                                    Metode</th>
+                                <th
+                                    style="background: rgba(0,0,0,0.3); color: #4ade80; padding: 15px; text-align: right; border-bottom: 2px solid rgba(34, 197, 94, 0.3);">
+                                    Total Bayar</th>
+                                <th
+                                    style="background: rgba(0,0,0,0.3); color: #4dc2f8; padding: 15px; text-align: right; border-bottom: 2px solid rgba(77, 194, 248, 0.3);">
+                                    Uang Tunai</th>
+                                <th
+                                    style="background: rgba(0,0,0,0.3); color: #4dc2f8; padding: 15px; text-align: right; border-bottom: 2px solid rgba(77, 194, 248, 0.3);">
+                                    Kembali</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="p, iterStat : ${listPenjualan}"
+                                style="border-bottom: 1px solid rgba(255,255,255,0.05); transition: all 0.2s;"
+                                onmouseover="this.style.background='rgba(255,255,255,0.05)'"
+                                onmouseout="this.style.background='transparent'">
+                                <td style="padding: 12px 15px; color: #fff;" th:text="${iterStat.count}"></td>
+                                <td style="padding: 12px 15px; color: #fff;"
+                                    th:text="${p.akun != null ? p.akun.username : 'Admin'}"></td>
+                                <td style="padding: 12px 15px; color: #94a3b8;"
+                                    th:text="${p.noNota != null ? p.noNota : '-'}"></td>
+                                <td style="padding: 12px 15px; color: #cbd5e1;"
+                                    th:text="${p.tanggal != null ? #temporals.format(p.tanggal, 'dd-MM-yyyy HH:mm') : '-'}">
+                                </td>
+                                <td style="padding: 12px 15px; color: #fff; text-align: center;"
+                                    th:text="${p.detailPenjualan != null ? #aggregates.sum(p.detailPenjualan.![qty]) : '0'}">
+                                </td>
+                                <td style="padding: 12px 15px; color: #fff; text-align: center;">
+                                    <span th:if="${p.metodePembayaran == 'TUNAI'}"
+                                        style="background: rgba(34, 197, 94, 0.2); color: #4ade80; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">TUNAI</span>
+                                    <span th:if="${p.metodePembayaran == 'QRIS'}"
+                                        style="background: rgba(59, 130, 246, 0.2); color: #60a5fa; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">QRIS</span>
+                                    <span th:if="${p.metodePembayaran == 'TRANSFER'}"
+                                        style="background: rgba(168, 85, 247, 0.2); color: #c084fc; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: bold;">TRANSFER</span>
+                                </td>
+                                <td style="padding: 12px 15px; text-align: right; color: #4ade80; font-weight: bold;">Rp
+                                    <span
+                                        th:text="${p.totalBayar != null ? #numbers.formatDecimal(p.totalBayar, 0, 'POINT', 0, 'COMMA') : '0'}"></span>
+                                </td>
+                                <td style="padding: 12px 15px; text-align: right; color: #fff;"
+                                    th:text="${p.uangTunai != null ? #numbers.formatDecimal(p.uangTunai, 0, 'POINT', 0, 'COMMA') : '0'}">
+                                </td>
+                                <td style="padding: 12px 15px; text-align: right; color: #fff;"
+                                    th:text="${p.uangKembali != null ? #numbers.formatDecimal(p.uangKembali, 0, 'POINT', 0, 'COMMA') : '0'}">
+                                </td>
+                            </tr>
 
-                        <tr th:if="${listPenjualan == null or #lists.isEmpty(listPenjualan)}">
-                            <td colspan="6" style="text-align: center; color: red; padding: 20px; font-weight: bold;">
-                                ⚠️ Belum ada data transaksi penjualan tersimpan di database!
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                            <tr th:if="${listPenjualan == null or #lists.isEmpty(listPenjualan)}">
+                                <td colspan="9"
+                                    style="text-align: center; color: #ef4444; padding: 40px; font-weight: bold; background: rgba(239, 68, 68, 0.05);">
+                                    ⚠️ Belum ada data transaksi penjualan yang sesuai dengan filter!
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </main>
     </div>
