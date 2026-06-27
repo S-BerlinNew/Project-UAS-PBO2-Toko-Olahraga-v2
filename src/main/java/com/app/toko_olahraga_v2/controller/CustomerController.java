@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.dao.DataIntegrityViolationException;
 
 
 @Controller
@@ -56,8 +58,10 @@ public class CustomerController {
     }
 
     @PostMapping("/simpan")
-    public String simpan(@ModelAttribute Customer customer) {
+    public String simpan(@ModelAttribute Customer customer, RedirectAttributes redirectAttributes) {
         customerService.tambahCustomer(customer);
+        redirectAttributes.addFlashAttribute("pesan", "Data customer berhasil ditambahkan!");
+        redirectAttributes.addFlashAttribute("tipePesan", "success");
         return "redirect:/customer";
     }
 
@@ -73,17 +77,24 @@ public class CustomerController {
         }
 
     @PostMapping("/update")
-    public String update(@ModelAttribute Customer customer) {
+    public String update(@ModelAttribute Customer customer, RedirectAttributes redirectAttributes) {
         customerService.tambahCustomer(customer);
-        
+        redirectAttributes.addFlashAttribute("pesan", "Data customer berhasil diperbarui!");
+        redirectAttributes.addFlashAttribute("tipePesan", "edit");
         return "redirect:/customer";
     }
 
 
     @GetMapping("/hapus/{idCustomer}")
-    public String hapus(@PathVariable int idCustomer) {
-        customerService.hapusCustomer(idCustomer);
-        
+    public String hapus(@PathVariable int idCustomer, RedirectAttributes redirectAttributes) {
+        try {
+            customerService.hapusCustomer(idCustomer);
+            redirectAttributes.addFlashAttribute("pesan", "Data customer berhasil dihapus!");
+            redirectAttributes.addFlashAttribute("tipePesan", "delete");
+        } catch (DataIntegrityViolationException e) {
+            redirectAttributes.addFlashAttribute("pesan", "Gagal menghapus: Customer sudah ada di transaksi!");
+            redirectAttributes.addFlashAttribute("tipePesan", "delete");
+        }
         return "redirect:/customer";
     }
     
