@@ -38,7 +38,155 @@
             </div>
         </header>
 
-        <!-- Main dashboard content is empty for now -->
+        <!-- Main Dashboard Content -->
+        <div class="summary-cards-container">
+            <!-- Card 1: Total Customer -->
+            <div class="summary-card">
+                <div class="summary-icon">
+                    <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                </div>
+                <div class="summary-info">
+                    <span class="summary-title">Total Customer</span>
+                    <span class="summary-value" th:text="${totalCustomer != null ? totalCustomer : '124'}">124</span>
+                </div>
+            </div>
+
+            <!-- Card 2: Total Pendapatan -->
+            <div class="summary-card success">
+                <div class="summary-icon">
+                    <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="12" y1="1" x2="12" y2="23"></line>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                    </svg>
+                </div>
+                <div class="summary-info">
+                    <span class="summary-title">Pendapatan Bulan Ini</span>
+                    <span class="summary-value" th:text="${pendapatan != null ? pendapatan : 'Rp 12.5M'}">Rp 12.5M</span>
+                </div>
+            </div>
+
+            <!-- Card 3: Transaksi -->
+            <div class="summary-card warning">
+                <div class="summary-icon">
+                    <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="9" cy="21" r="1"></circle>
+                        <circle cx="20" cy="21" r="1"></circle>
+                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                    </svg>
+                </div>
+                <div class="summary-info">
+                    <span class="summary-title">Total Transaksi</span>
+                    <span class="summary-value" th:text="${totalTransaksi != null ? totalTransaksi : '856'}">856</span>
+                </div>
+            </div>
+
+            <!-- Card 4: Stok Menipis -->
+            <div class="summary-card danger">
+                <div class="summary-icon">
+                    <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                        <line x1="12" y1="9" x2="12" y2="13"></line>
+                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                    </svg>
+                </div>
+                <div class="summary-info">
+                    <span class="summary-title">Stok Menipis</span>
+                    <span class="summary-value" th:text="${stokMenipis != null ? stokMenipis : '12'}">12</span>
+                </div>
+            </div>
+        </div>
+        <!-- Dashboard Tables Section -->
+        <div class="dashboard-tables-grid">
+            <!-- Table 1: Data Barang Terbaru -->
+            <div class="dashboard-table-card">
+                <div class="dashboard-table-header">
+                    <h3>Data Barang Terbaru</h3>
+                    <a th:href="@{/barang}">Lihat Semua &rarr;</a>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Kode</th>
+                            <th>Nama Barang</th>
+                            <th>Stok</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="b : ${listBarang}">
+                            <td th:text="${b.kodeBarang}">KOD-01</td>
+                            <td th:text="${b.namaBarang}">Sepatu Futsal</td>
+                            <td>
+                                <span th:text="${b.stok}" th:style="${b.stok < 5} ? 'color: #ef4444; font-weight: bold;' : ''">10</span>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(listBarang)}">
+                            <td colspan="3" style="text-align: center; color: #ef4444;">Data kosong</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Table 2: Data Customer Terbaru -->
+            <div class="dashboard-table-card">
+                <div class="dashboard-table-header">
+                    <h3>Daftar Customer / Member</h3>
+                    <a th:href="@{/customer}">Lihat Semua &rarr;</a>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Kode</th>
+                            <th>Nama Customer</th>
+                            <th>No. Telp</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="c : ${listCustomer}">
+                            <td th:text="${c.kodeCustomer}">CUST-01</td>
+                            <td th:text="${c.namaCustomer}">John Doe</td>
+                            <td th:text="${c.noTelepon}">08123456789</td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(listCustomer)}">
+                            <td colspan="3" style="text-align: center; color: #ef4444;">Data kosong</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Table 3: Data Akun (Kasir) -->
+            <div class="dashboard-table-card">
+                <div class="dashboard-table-header">
+                    <h3>Daftar Akun Pengguna</h3>
+                    <a th:href="@{/kelola-akun}">Lihat Semua &rarr;</a>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Nama Lengkap</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="a : ${listAkun}">
+                            <td th:text="${a.username}">admin</td>
+                            <td th:text="${a.namaLengkap}">Administrator</td>
+                            <td>
+                                <span th:text="${a.role}" style="padding: 4px 8px; border-radius: 4px; background: rgba(77, 194, 248, 0.1); color: var(--color-btn2); font-size: 11px; font-weight: bold;">ADMIN</span>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(listAkun)}">
+                            <td colspan="3" style="text-align: center; color: #ef4444;">Data kosong</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
         
     </main>
 

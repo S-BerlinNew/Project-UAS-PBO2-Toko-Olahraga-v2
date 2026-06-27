@@ -24,4 +24,7 @@ public interface BarangRepository extends JpaRepository<Barang, Integer>{
     // ========PENCARIAN DAN SORTING=========
     @Query("SELECT b FROM Barang b WHERE LOWER(b.namaBarang) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(b.kodeBarang) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(b.brand) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     List<Barang> searchBarang(@Param("keyword") String keyword, org.springframework.data.domain.Sort sort);
+
+    // ========HITUNG STOK MENIPIS=========
+    long countByStokLessThan(int batas);
 } 
