@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Log Aktivitas - Toko Olahraga</title>
+    <link rel="icon" type="image/png" th:href="@{/assets/logo-square.png}"/>
+    <link rel="stylesheet" th:href="@{/css/variables.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css(v=2)}">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <!-- ===== SIDEBAR ===== -->
+        <aside th:replace="~{fragments/sidebar :: sidebar-fragments(activeMenu='log-aktivitas')}"></aside>
+
+        <!-- ===== MAIN CONTENT ===== -->
+        <main class="main-content">
+            <!-- New Top Navbar -->
+            <header class="top-navbar">
+                <h1 class="page-title">Riwayat Aktivitas Pengguna</h1>
+                
+                <div class="navbar-right">
+                    <div class="notification-icon">
+                        <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                            <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/>
+                        </svg>
+                    </div>
+                    <div class="user-profile">
+                        <div class="user-info">
+                            <span class="welcome-text">Welcome</span>
+                            <span class="user-name" th:text="${session.loggedInUser}">User</span>
+                        </div>
+                        <div class="avatar-circle"></div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Table Data Log -->
+            <div class="main-data" style="margin-top: 20px;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID Log</th>
+                            <th>Waktu</th>
+                            <th>User ID</th>
+                            <th>Nama Pengguna</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="log: ${listLog}">
+                            <td th:text="${log.idLog}"></td>
+                            <td th:text="${#temporals.format(log.waktu, 'dd MMM yyyy HH:mm:ss')}"></td>
+                            <td th:text="${log.akun != null ? log.akun.idAkun : '-'}"></td>
+                            <td th:text="${log.akun != null ? log.akun.namaLengkap : 'System'}"></td>
+                            <td th:text="${log.aksi}"></td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(listLog)}">
+                            <td colspan="5" class="empty-msg" style="text-align: center; color: rgba(255,255,255,0.6); padding: 30px;">Belum ada riwayat aktivitas!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

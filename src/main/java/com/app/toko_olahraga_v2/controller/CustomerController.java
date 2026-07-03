@@ -1,7 +1,11 @@
 package com.app.toko_olahraga_v2.controller;
 
 import com.app.toko_olahraga_v2.model.Customer;
+import com.app.toko_olahraga_v2.model.Akun;
+import com.app.toko_olahraga_v2.model.LogAktivitas;
 import com.app.toko_olahraga_v2.service.CustomerService;
+import com.app.toko_olahraga_v2.service.LogAktivitasService;
+import com.app.toko_olahraga_v2.service.AuthService;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,24 +19,38 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.dao.DataIntegrityViolationException;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/customer")
 public class CustomerController {
 
     private final CustomerService customerService;
+    private final LogAktivitasService logAktivitasService;
+    private final AuthService authService;
 
-    public CustomerController(CustomerService customerService) {
+    public CustomerController(CustomerService customerService, LogAktivitasService logAktivitasService, AuthService authService) {
         this.customerService = customerService;
+        this.logAktivitasService = logAktivitasService;
+        this.authService = authService;
     }
 
-    @PostMapping("/simpan-ajax") // Pastikan url-nya sama persis lowercase
+    @PostMapping("/simpan-ajax")
     @ResponseBody
-    public ResponseEntity<?> simpanAjax(@RequestBody Customer customer) {
-        // Tinggal panggil fungsi service lo yang sekarang sudah pinter generate kode otomatis
+    public ResponseEntity<?> simpanAjax(@RequestBody Customer customer, HttpSession session) {
         customerService.tambahCustomer(customer); 
+
+        try {
+            Integer idAkun = (Integer) session.getAttribute("idAkun");
+            Akun akun = (idAkun != null) ? authService.getAkunById(idAkun) : null;
+            LogAktivitas log = new LogAktivitas();
+            log.setAkun(akun);
+            log.setAksi("Menambahkan customer baru (AJAX): " + customer.getNamaCustomer() + " (No. Telp: " + customer.getNoTelepon() + ")");
+            logAktivitasService.addLog(log);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         
-        // Kembalikan objek customer yang sudah komplit dengan kodenya ke JavaScript
         return ResponseEntity.ok(customer); 
     }
     
@@ -63,8 +81,20 @@ public class CustomerController {
     }
 
     @PostMapping("/simpan")
-    public String simpan(@ModelAttribute Customer customer, RedirectAttributes redirectAttributes) {
+    public String simpan(@ModelAttribute Customer customer, RedirectAttributes redirectAttributes, HttpSession session) {
         customerService.tambahCustomer(customer);
+
+        try {
+            Integer idAkun = (Integer) session.getAttribute("idAkun");
+            Akun akun = (idAkun != null) ? authService.getAkunById(idAkun) : null;
+            LogAktivitas log = new LogAktivitas();
+            log.setAkun(akun);
+            log.setAksi("Menambahkan customer baru: " + customer.getNamaCustomer() + " (No. Telp: " + customer.getNoTelepon() + ")");
+            logAktivitasService.addLog(log);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         redirectAttributes.addFlashAttribute("pesan", "Data customer berhasil ditambahkan!");
         redirectAttributes.addFlashAttribute("tipePesan", "success");
         return "redirect:/customer";
@@ -82,17 +112,44 @@ public class CustomerController {
         }
 
     @PostMapping("/update")
-    public String update(@ModelAttribute Customer customer, RedirectAttributes redirectAttributes) {
+    public String update(@ModelAttribute Customer customer, RedirectAttributes redirectAttributes, HttpSession session) {
         customerService.tambahCustomer(customer);
+
+        try {
+            Integer idAkun = (Integer) session.getAttribute("idAkun");
+            Akun akun = (idAkun != null) ? authService.getAkunById(idAkun) : null;
+            LogAktivitas log = new LogAktivitas();
+            log.setAkun(akun);
+            log.setAksi("Mengedit customer: " + customer.getNamaCustomer() + " (No. Telp: " + customer.getNoTelepon() + ")");
+            logAktivitasService.addLog(log);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         redirectAttributes.addFlashAttribute("pesan", "Data customer berhasil diperbarui!");
         redirectAttributes.addFlashAttribute("tipePesan", "edit");
         return "redirect:/customer";
     }
 
     @GetMapping("/hapus/{idCustomer}")
-    public String hapus(@PathVariable int idCustomer, RedirectAttributes redirectAttributes) {
+    public String hapus(@PathVariable int idCustomer, RedirectAttributes redirectAttributes, HttpSession session) {
         try {
+            Customer customer = customerService.getCustomerById(idCustomer);
+            String namaCustomer = (customer != null) ? customer.getNamaCustomer() : "Tidak Diketahui";
+
             customerService.hapusCustomer(idCustomer);
+
+            try {
+                Integer idAkun = (Integer) session.getAttribute("idAkun");
+                Akun akun = (idAkun != null) ? authService.getAkunById(idAkun) : null;
+                LogAktivitas log = new LogAktivitas();
+                log.setAkun(akun);
+                log.setAksi("Menghapus customer: " + namaCustomer + " (ID: " + idCustomer + ")");
+                logAktivitasService.addLog(log);
+            } catch (Exception logEx) {
+                logEx.printStackTrace();
+            }
+
             redirectAttributes.addFlashAttribute("pesan", "Data customer berhasil dihapus!");
             redirectAttributes.addFlashAttribute("tipePesan", "delete");
         } catch (DataIntegrityViolationException e) {
