@@ -37,6 +37,7 @@ public class AuthController {
 
             session.setAttribute("loggedInUser", akunReal.getNamaLengkap());
             session.setAttribute("role", akunReal.getRole().name()); // Mengambil string ADMIN / KASIR
+            session.setAttribute("idAkun", akunReal.getIdAkun());
             
             return "redirect:/dashboard";
         } else {

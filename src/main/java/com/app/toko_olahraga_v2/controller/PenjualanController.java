@@ -3,16 +3,19 @@ package com.app.toko_olahraga_v2.controller;
 import com.app.toko_olahraga_v2.model.Penjualan;
 import com.app.toko_olahraga_v2.model.Customer;
 import com.app.toko_olahraga_v2.model.DetailPenjualan;
+import com.app.toko_olahraga_v2.model.LogAktivitas;
 import com.app.toko_olahraga_v2.model.Akun;
 import com.app.toko_olahraga_v2.model.Barang;
 import com.app.toko_olahraga_v2.service.BarangService;
 import com.app.toko_olahraga_v2.service.CustomerService;
+import com.app.toko_olahraga_v2.service.LogAktivitasService;
 import com.app.toko_olahraga_v2.service.PenjualanService;
 import com.app.toko_olahraga_v2.service.AuthService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -21,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class PenjualanController {
@@ -29,13 +33,15 @@ public class PenjualanController {
     private final CustomerService customerService;
     private final BarangService barangService;
     private final AuthService authService;
+    private final LogAktivitasService logAktivitasService;
 
     public PenjualanController(PenjualanService penjualanService, CustomerService customerService,
-            BarangService barangService, AuthService authService) {
+            BarangService barangService, AuthService authService, LogAktivitasService logAktivitasService) {
         this.penjualanService = penjualanService;
         this.customerService = customerService;
         this.barangService = barangService;
         this.authService = authService;
+        this.logAktivitasService = logAktivitasService;
     }
 
     // 1. MEMBUKA HALAMAN UTAMA KASIR (Saat pertama kali diklik dari Dashboard)
@@ -173,12 +179,42 @@ public class PenjualanController {
                 }
             }
 
-            penjualanService.prosesTransaksi(penjualan, listKeranjang);
-            return ResponseEntity.ok("Transaksi berhasil disimpan.");
+            // Simpan hasil transaksi ke variabel agar bisa ambil ID-nya
+            Penjualan hasil = penjualanService.prosesTransaksi(penjualan, listKeranjang);
+
+            // Menyimpan aktivitas
+            try {
+                LogAktivitas log = new LogAktivitas();
+                log.setAkun(hasil.getAkun());
+                log.setAksi("Melakukan transaksi penjualan No. Nota: " + hasil.getNoNota() + " dengan Total: Rp " + String.format("%,.0f", hasil.getTotalBayar()));
+                logAktivitasService.addLog(log);
+            } catch (Exception logEx) {
+                logEx.printStackTrace();
+            }
+
+            // Return data lengkap untuk ditampilkan di popup nota
+            String namaKasir   = hasil.getAkun() != null ? hasil.getAkun().getUsername() : "Admin";
+            String namaCustomer = hasil.getCustomer() != null ? hasil.getCustomer().getNamaCustomer() : "-";
+
+            return ResponseEntity.ok(Map.of(
+                "idPenjualan", hasil.getIdPenjualan(),
+                "noNota",      hasil.getNoNota(),
+                "kasir",       namaKasir,
+                "customer",    namaCustomer,
+                "pesan",       "Transaksi berhasil disimpan."
+            ));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    // 6. MENAMPILKAN HALAMAN NOTA SETELAH TRANSAKSI SELESAI
+    @GetMapping("/penjualan/nota/{id}")
+    public String tampilkanNota(@PathVariable Integer id, Model model) {
+        Penjualan p = penjualanService.getById(id);
+        model.addAttribute("p", p);
+        return "penjualan/nota";
     }
 
     // Helper records for JSON serialization/deserialization

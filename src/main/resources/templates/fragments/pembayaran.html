@@ -40,10 +40,8 @@
             <div id="divQris" class="opsi-div-modal"
                 style="border: 2px solid #0056b3; padding: 20px; background: #f0f5ff; border-radius: 5px; display: none;">
                 <h3 style="color: #0056b3; margin-top: 0;">📱 PEMBAYARAN VIA QRIS / DEBIT</h3>
-                <p style="font-size: 18px; font-weight: bold;">Total Tagihan: Rp <span class="mdlTotalNonTunai">0</span>
-                </p>
-                <div
-                    style="background: #fff9db; padding: 10px; border: 1px solid #f59f00; font-weight: bold; text-align: center; color: #b57c1e; font-size: 13px;">
+                <p style="font-size: 18px; font-weight: bold;">Total Tagihan: Rp <span class="mdlTotalNonTunai">0</span></p>
+                <div style="background: #fff9db; padding: 10px; border: 1px solid #f59f00; font-weight: bold; text-align: center; color: #b57c1e; font-size: 13px;">
                     ⏳ MENUNGGU PROSES SCAN SELESAI...
                 </div>
             </div>
@@ -51,10 +49,8 @@
             <div id="divTransfer" class="opsi-div-modal"
                 style="border: 2px solid orange; padding: 20px; background: #fffaf0; border-radius: 5px; display: none;">
                 <h3 style="color: orange; margin-top: 0;">🏦 PEMBAYARAN TRANSFER BANK</h3>
-                <p style="font-size: 18px; font-weight: bold;">Total Tagihan: Rp <span class="mdlTotalNonTunai">0</span>
-                </p>
-                <div
-                    style="background: #ffe0b2; padding: 10px; border: 1px solid #b57c1e; font-weight: bold; text-align: center; color: #b57c1e; font-size: 13px;">
+                <p style="font-size: 18px; font-weight: bold;">Total Tagihan: Rp <span class="mdlTotalNonTunai">0</span></p>
+                <div style="background: #ffe0b2; padding: 10px; border: 1px solid #b57c1e; font-weight: bold; text-align: center; color: #b57c1e; font-size: 13px;">
                     ⏳ HARAP KASIR CEK MUTASI SECARA MANUAL...
                 </div>
             </div>
@@ -74,20 +70,20 @@
     <script th:inline="javascript">
         /*<![CDATA[*/
         (function () {
-            // 1. Ambil semua parameter kiriman dari Thymeleaf
-            const metode = /*[[${metode}]]*/ 'TUNAI';
-            const customerId = /*[[${customerId}]]*/ null;
-            const totalBayar = parseFloat(/*[[${totalBayar}]]*/ 0);
+            const metode      = /*[[${metode}]]*/ 'TUNAI';
+            const customerId  = /*[[${customerId}]]*/ null;
+            const totalBayar  = parseFloat(/*[[${totalBayar}]]*/ 0);
             const tunaiDiterima = parseFloat(/*[[${tunaiDiterima}]]*/ 0);
-            const idAkun = /*[[${idAkun}]]*/ null;
+            const idAkun      = /*[[${idAkun}]]*/ null;
 
-            // 2. Tarik array keranjang belanja dari Session Storage lokal
-            const keranjangData = JSON.parse(sessionStorage.getItem("keranjangBelanja") || "[]");
+            // Ambil langsung dari variabel global penjualan.js (lebih andal dari sessionStorage)
+            const keranjangData = (typeof keranjangBelanja !== 'undefined' && keranjangBelanja.length > 0)
+                ? keranjangBelanja
+                : JSON.parse(sessionStorage.getItem("keranjangBelanja") || "[]");
 
-            // 3. Set tampilan DIV sesuai metode terpilih
             if (metode === 'TUNAI') {
                 document.getElementById("divTunai").style.display = "block";
-                document.getElementById("mdlTotalTunai").innerText = totalBayar.toLocaleString('id-ID');
+                document.getElementById("mdlTotalTunai").innerText    = totalBayar.toLocaleString('id-ID');
                 document.getElementById("mdlDiterimaTunai").innerText = tunaiDiterima.toLocaleString('id-ID');
                 document.getElementById("mdlKembalianTunai").innerText = (tunaiDiterima - totalBayar).toLocaleString('id-ID');
             } else {
@@ -96,55 +92,58 @@
                 document.querySelectorAll(".mdlTotalNonTunai").forEach(el => el.innerText = totalBayar.toLocaleString('id-ID'));
             }
 
-            // 4. PROSES PENYIMPANAN RANGKUMAN UTUH MASSAL
             document.getElementById("btnSimpanFinalKeDatabase").addEventListener("click", function () {
                 if (keranjangData.length === 0) {
                     alert("Aksi ditolak! Data item belanja tidak ditemukan.");
                     return;
                 }
 
-                // Seluruh data (id_akun, customer, metode bayar, dan list barang) digabungkan jadi satu objek JSON utuh
                 const payloadFinal = {
-                    idAkun: idAkun ? parseInt(idAkun) : null, // ID akun kasir yang login
-                    customerId: customerId ? parseInt(customerId) : null,
-                    metodePembayaran: metode,
-                    totalBayar: totalBayar,
-                    jumlahBayar: metode === 'TUNAI' ? tunaiDiterima : totalBayar, // non-tunai diisi totalBayar agar tidak <= 0 di server
-                    uangKembali: metode === 'TUNAI' ? (tunaiDiterima - totalBayar) : 0,
-                    // Rangkuman lengkap item belanjaan
+                    idAkun      : idAkun ? parseInt(idAkun) : null,
+                    customerId  : customerId ? parseInt(customerId) : null,
+                    metodePembayaran : metode,
+                    totalBayar  : totalBayar,
+                    jumlahBayar : metode === 'TUNAI' ? tunaiDiterima : totalBayar,
+                    uangKembali : metode === 'TUNAI' ? (tunaiDiterima - totalBayar) : 0,
                     items: keranjangData.map(item => ({
-                        idBarang: item.idBarang,
-                        namaBarang: item.namaBarang,
-                        hargaJual: item.hargaJual,
-                        qty: item.qty,
-                        brand: item.brand,
+                        idBarang    : item.idBarang,
+                        namaBarang  : item.namaBarang,
+                        hargaJual   : item.hargaJual,
+                        qty         : item.qty,
+                        brand       : item.brand,
                         diskonPersen: item.diskonPersen,
-                        subtotal: (item.hargaJual * item.qty) - ((item.hargaJual * item.qty) * (item.diskonPersen / 100))
+                        subtotal    : (item.hargaJual * item.qty) - ((item.hargaJual * item.qty) * (item.diskonPersen / 100))
                     }))
                 };
 
-                // Kirim data rangkuman massal ke server database
                 fetch("/penjualan/simpan-final", {
-                    method: "POST",
+                    method : "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(payloadFinal)
+                    body   : JSON.stringify(payloadFinal)
                 })
-                    .then(res => {
-                        if (res.ok) {
-                            alert("🎉 Transaksi Berhasil Disimpan ke Database!");
-                            sessionStorage.removeItem("keranjangBelanja");
-                            window.location.href = "/penjualan";
-                        } else {
-                            return res.text().then(text => { throw new Error(text) });
-                        }
-                    })
-                    .catch(err => {
-                        alert("Gagal menyimpan transaksi: " + err.message);
-                    });
+                .then(res => {
+                    if (res.ok) return res.json();
+                    return res.text().then(text => { throw new Error(text); });
+                })
+                .then(data => {
+                    sessionStorage.removeItem("keranjangBelanja");
+
+                    // Sembunyikan modal konfirmasi pembayaran
+                    document.getElementById("modalOverlayPembayaran").style.display = "none";
+
+                    // Tunggu sebentar agar DOM dan fungsi global penjualan.js siap
+                    setTimeout(() => {
+                        renderNota(data, keranjangData, metode, totalBayar, tunaiDiterima);
+                        const overlay = document.getElementById("overlayNota");
+                        overlay.style.display = "flex";
+                    }, 100);
+                })
+                .catch(err => {
+                    alert("Gagal menyimpan transaksi: " + err.message);
+                });
             });
         })();
         /*]]>*/
     </script>
 </body>
-
 </html>
