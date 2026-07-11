@@ -239,9 +239,9 @@ function renderTabelKeranjang() {
         tr.innerHTML = `
             <td><b>${item.namaBarang}</b> <br><small style="color:#666">${item.kodeBarang}</small></td>
             <td>Rp ${item.hargaJual.toLocaleString('id-ID')}</td>
-            <td><input type="number" value="${item.qty}" min="1" max="${item.stokMax}" style="width: 60px; text-align: center;" onchange="updateQtyKeranjang(${index}, this.value)"></td>
+            <td><input type="number" value="${item.qty}" min="1" max="${item.stokMax}" style="background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; padding: 6px; border-radius: 4px; width: 60px; text-align: center; outline: none;" onchange="updateQtyKeranjang(${index}, this.value)"></td>
             <td>${item.brand}</td>
-            <td><input type="number" value="${item.diskonPersen}" min="0" max="100" style="width: 50px; text-align: center;" onchange="updateDiskonKeranjang(${index}, this.value)"> %</td>
+            <td style="white-space: nowrap;"><input type="number" value="${item.diskonPersen}" min="0" max="100" style="background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; padding: 6px; border-radius: 4px; width: 60px; text-align: center; outline: none;" onchange="updateDiskonKeranjang(${index}, this.value)"> <span style="color: #cbd5e1;">%</span></td>
             <td><b>Rp ${subtotal.toLocaleString('id-ID')}</b></td>
             <td><button type="button" onclick="hapusItemKeranjang(${index})" style="background: #ef4444; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer;">Hapus</button></td>
         `;
@@ -387,8 +387,9 @@ function handleMetodePembayaranChange() {
             } else {
                 inputJumlahBayar.disabled = true;
                 inputJumlahBayar.value = "";
-                inputJumlahBayar.placeholder = "Terkunci (Pembayaran Non-Tunai)";
-                inputJumlahBayar.style.backgroundColor = "#e2e8f0"; // Warna abu-abu terkunci
+                inputJumlahBayar.placeholder = "Terkunci (Non-Tunai)";
+                inputJumlahBayar.style.backgroundColor = "rgba(255,255,255,0.05)"; // Gelap terkunci
+                inputJumlahBayar.style.cursor = "not-allowed";
             }
         };
 
@@ -401,4 +402,134 @@ if (document.readyState !== 'loading') {
     handleMetodePembayaranChange();
 } else {
     document.addEventListener("DOMContentLoaded", handleMetodePembayaranChange);
+}
+
+// ============================================================
+// FUNGSI NOTA - dipanggil dari pembayaran.html setelah simpan
+// ============================================================
+let _notaHtmlUntukCetak = '';
+
+function renderNota(data, items, metode, totalBayar, tunaiDiterima) {
+    const fmt = n => Number(n).toLocaleString('id-ID');
+    const tgl = new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'2-digit', year:'numeric'})
+              + ' ' + new Date().toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
+
+    let barisBarang = '';
+    items.forEach(item => {
+        const subtotalItem  = item.hargaJual * item.qty;
+        const diskonRp      = subtotalItem * (item.diskonPersen / 100);
+        const subtotalAkhir = subtotalItem - diskonRp;
+
+        barisBarang += `
+            <tr>
+                <td style="padding:4px 0;">${item.namaBarang}</td>
+                <td style="text-align:center;">${item.qty}</td>
+                <td style="text-align:right;">${fmt(item.hargaJual)}</td>
+                <td style="text-align:right;">${fmt(subtotalItem)}</td>
+            </tr>`;
+
+        if (item.diskonPersen > 0) {
+            barisBarang += `
+            <tr style="color:#888; font-size:12px;">
+                <td colspan="3" style="padding-left:8px;">* Diskon (${item.diskonPersen}%)</td>
+                <td style="text-align:right;">- ${fmt(diskonRp)}</td>
+            </tr>
+            <tr style="font-size:12px; color:#555;">
+                <td colspan="3" style="padding-left:8px;">Subtotal Setelah Diskon:</td>
+                <td style="text-align:right;">${fmt(subtotalAkhir)}</td>
+            </tr>`;
+        }
+    });
+
+    let barisKembalian = '';
+    if (metode === 'TUNAI') {
+        const kembalian = tunaiDiterima - totalBayar;
+        barisKembalian = `
+            <tr>
+                <td style="padding-top:4px;">Uang Diterima</td>
+                <td style="text-align:right; padding-top:4px;">Rp ${fmt(tunaiDiterima)}</td>
+            </tr>
+            <tr>
+                <td>Kembalian</td>
+                <td style="text-align:right;">Rp ${fmt(kembalian)}</td>
+            </tr>`;
+    }
+
+    document.getElementById("isiNota").style.color = '#000';
+    document.getElementById("isiNota").style.background = '#fff';
+    document.getElementById("isiNota").innerHTML = `
+        <div style="text-align:center; margin-bottom:12px;">
+            <div style="font-size:16px; font-weight:bold; letter-spacing:1px;">Toko Olahraga</div>
+            <img src="/assets/logo.png" alt="Logo" style="height:60px; margin:6px auto; display:block;">
+            <div style="font-size:12px; color:#555;">Jl. Ketapang No 100, Kota Pontianak</div>
+            <div style="font-size:12px; color:#555;">Telepon: 08911911911</div>
+        </div>
+
+        <div style="border-top:1px dashed #999; border-bottom:1px dashed #999; padding:8px 0; margin-bottom:10px; font-size:13px;">
+            <div>No Nota &nbsp;: ${data.noNota || '-'}</div>
+            <div>Kasir &nbsp;&nbsp;&nbsp;: ${data.kasir || 'Admin'}</div>
+            <div>Tanggal &nbsp;: ${tgl}</div>
+            <div>Customer : ${data.customer || '-'}</div>
+        </div>
+
+        <table style="width:100%; font-size:13px; border-collapse:collapse;">
+            <thead>
+                <tr style="border-bottom:1px dashed #999;">
+                    <th style="text-align:left; padding-bottom:6px;">Barang</th>
+                    <th style="text-align:center;">Qty</th>
+                    <th style="text-align:right;">Harga</th>
+                    <th style="text-align:right;">Total</th>
+                </tr>
+            </thead>
+            <tbody>${barisBarang}</tbody>
+        </table>
+
+        <div style="border-top:1px dashed #999; margin-top:10px; padding-top:10px;">
+            <table style="width:100%; font-size:14px;">
+                <tr style="font-weight:bold; font-size:15px;">
+                    <td>TOTAL BAYAR</td>
+                    <td style="text-align:right;">Rp ${fmt(totalBayar)}</td>
+                </tr>
+                ${barisKembalian}
+                <tr style="font-size:12px; color:#555;">
+                    <td style="padding-top:4px;">Metode</td>
+                    <td style="text-align:right; padding-top:4px;">${metode}</td>
+                </tr>
+            </table>
+        </div>
+
+        <div style="border-top:1px dashed #999; margin-top:12px; text-align:center; font-size:12px; padding-top:8px;">
+            <div>Terima Kasih Atas Kunjungan Anda!</div>
+            <div style="margin-top:4px;">-- Closed Bill --</div>
+        </div>
+    `;
+
+    _notaHtmlUntukCetak = document.getElementById("isiNota").innerHTML;
+}
+
+function cetakNota() {
+    const iframe = document.getElementById("iframePrint");
+    iframe.style.display = "block";
+    const doc = iframe.contentWindow.document;
+    doc.open();
+    doc.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
+        <base href="${window.location.origin}">
+        <title>Nota Penjualan</title>
+        <style>
+            body { font-family: 'Courier New', monospace; width: 350px; margin: 0 auto; padding: 20px; color: #000; background: #fff; }
+            table { width: 100%; border-collapse: collapse; }
+            img { display: block; margin: 6px auto; height: 60px; }
+            div { text-align: inherit; }
+            @media print { body { margin: 0; } }
+        </style>
+        </head><body>${_notaHtmlUntukCetak}</body></html>`);
+    doc.close();
+    iframe.contentWindow.focus();
+    iframe.contentWindow.print();
+    setTimeout(() => { iframe.style.display = "none"; }, 1000);
+}
+
+function tutupNotaDanReset() {
+    document.getElementById("overlayNota").style.display = "none";
+    window.location.href = "/penjualan";
 }

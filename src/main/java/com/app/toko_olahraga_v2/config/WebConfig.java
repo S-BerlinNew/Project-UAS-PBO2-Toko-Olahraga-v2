@@ -21,7 +21,8 @@ public class WebConfig implements WebMvcConfigurer {
                     //KECUALI URL link ini
                     "/",          
                     "/login",     
-                    "/css/**"   
+                    "/css/**",
+                    "/assets/**"
                 );
     }
 }

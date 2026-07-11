@@ -5,82 +5,119 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistem Kasir - Toko Olahraga v2</title>
     <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/penjualan.css}">
 </head>
 <body>
     <div class="kasir">
         <div class="kasir-wrapper">
             <div class="head-kasir">
-                <div style="display: flex; justify-content: space-between; width: 100%;">
-                    <div><b>🏀 TOKO OLAHRAGA V2</b></div>
-                    <div><a th:href="@{/dashboard}" style="color: red; text-decoration: none; font-weight: bold;">Exit</a></div>
+                <div><b>🏀 TOKO OLAHRAGA V2 - KASIR</b></div>
+                <div><a th:href="@{/dashboard}">KELUAR</a></div>
+            </div>
+
+            <div class="info-row">
+                <div class="info-card glass-panel" style="padding: 15px;">
+                    <h4>👨‍💼 Kasir Bertugas</h4>
+                    <p style="font-weight: bold; color: #fff;"><span th:text="${session.loggedInUser != null ? session.loggedInUser : 'Admin'}"></span></p>
+                </div>
+                
+                <div class="info-card glass-panel" style="padding: 15px; grid-column: span 2;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div>
+                            <h4>👑 Status Member</h4>
+                            <div id="sectionNonMember">
+                                <p class="text-gray">Umum (Non-Member)</p>
+                            </div>
+                            <div id="sectionMember" style="display:none;">
+                                <p class="text-green-bold">Member Aktif</p>
+                                <p class="text-light"><span id="txtNamaCustomer"></span> - <span id="txtNoTelepon"></span></p>
+                            </div>
+                        </div>
+                        <div class="member-buttons" style="margin-top: 0;">
+                            <button type="button" id="btnTambahMember" class="btn-member">➕ Member Baru</button>
+                            <button type="button" id="btnCariMember" class="btn-member btn-member-cari">🔍 Cari</button>
+                            <button type="button" id="btnResetMember" class="btn-member btn-member-batal">❌ Batal</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="column-1">
-                <div class="info-user">
-                    <p>Kasir: <b th:text="${session.loggedInUser != null ? session.loggedInUser : 'Admin'}"></b></p>
-                </div>
+            <div class="pos-grid">
+                <!-- Kiri: Input dan Keranjang -->
+                <div class="glass-panel">
+                    <div class="input-transaksi" style="position: relative;">
+                        <input type="text" id="inputKodeBarang" placeholder="Ketik atau pilih kode barang..." autocomplete="off">
+                        
+                        <!-- Custom Dropdown -->
+                        <div id="customDropdownBarang" class="custom-dropdown" style="display: none;">
+                            <div th:each="b : ${listBarang}" class="dropdown-item" 
+                                 th:data-kode="${b.kodeBarang}" 
+                                 th:data-nama="${b.namaBarang}">
+                                <span style="font-weight: bold; color: #4dc2f8;" th:text="${b.kodeBarang}"></span> - 
+                                <span th:text="${b.namaBarang}"></span>
+                            </div>
+                        </div>
 
-                <div class="info-member">
-                    <div id="sectionNonMember">
-                        <p>MEMBER : <span id="namaMemberPilihan">Umum (Non-Member)</span></p>
+                        <button type="button" onclick="tambahBarangByKode()">TAMBAH</button>
                     </div>
 
-                    <div id="sectionMember" style="display:none;">
-                        <p style="margin-bottom: 5px;">MEMBER : 
-                            <span style="color: #0284c7; font-weight: bold;">Member Aktif</span>
-                        </p>
-                        <table style="width:100%; font-size:13px; color:#334155; background:#fff; border:1px dashed #cbd5e1; padding:8px; border-radius:4px;">
-                            <tr>
-                                <td style="padding: 2px 0;">Nama</td>
-                                <td>: <b id="txtNamaCustomer"></b></td>
-                            </tr>
-                            <tr>
-                                <td style="padding: 2px 0;">No. Telp</td>
-                                <td>: <span id="txtNoTelepon"></span></td>
-                            </tr>
+                    <div class="keranjang">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nama Barang</th>
+                                    <th>Harga</th>
+                                    <th style="width: 80px;">Qty</th>
+                                    <th>Brand</th>
+                                    <th style="width: 100px;">Disc (%)</th>
+                                    <th>Subtotal</th>
+                                    <th style="text-align: center;">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelKeranjang">
+                                <tr id="rowKosong">
+                                    <td colspan="7" style="text-align: center; color: rgba(255,255,255,0.5); padding: 40px 20px;">
+                                        🛒 Keranjang masih kosong. Silakan masukkan kode barang.
+                                    </td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
-                    
-                    <button type="button" id="btnTambahMember">TAMBAH MEMBER</button>
-                    <button type="button" id="btnCariMember">CARI MEMBER</button>
-                    <button type="button" id="btnResetMember" style="background: #ef4444; color: white; display: none;">HAPUS MEMBER</button>
                 </div>
 
-                <div class="total-box" style="background: #222; color: #fff; padding: 15px; margin-top: 20px;">
-                    <p style="margin: 0; font-size: 14px; color: #aaa;">TOTAL BAYAR :</p>
-                    <h1 style="margin: 5px 0 0 0; color: #00ff00;">RP <span id="displayTotalBayar">0</span></h1>
-                </div>
-             </div>
+                <!-- Kanan: Pembayaran -->
+                <div class="glass-panel">
+                    <div class="total-box">
+                        <p>TOTAL BAYAR</p>
+                        <h1>Rp <span id="displayTotalBayar">0</span></h1>
+                    </div>
 
-             <div class="column-2">
-                <div class="input-transaksi">
-                    <input type="text" id="inputKodeBarang" placeholder="Ketik kode barang...">
-                    <button type="button" onclick="tambahBarangByKode()">Tambah</button>
-                </div>
+                    <div class="form-pembayaran">
+                        <h3>💳 Penyelesaian</h3>
+                        <hr style="border-color: rgba(255,255,255,0.1); margin-bottom: 20px;">
+                        
+                        <form id="formTransaksi">
+                            <label>Metode Pembayaran</label>
+                            <select id="selectMetodePembayaran" name="metode">
+                                <option value="TUNAI">TUNAI (CASH)</option>
+                                <option value="QRIS">QRIS / DEBIT</option>
+                                <option value="TRANSFER">TRANSFER BANK</option>
+                            </select>
 
-                <div class="keranjang">
-                    <table border="1" style="width: 100%; border-collapse: collapse;">
-                        <thead>
-                            <tr>
-                                <th>Nama Barang</th>
-                                <th>Harga</th>
-                                <th>Qty</th>
-                                <th>Brand</th>
-                                <th>Diskon (%)</th>
-                                <th>Subtotal</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabelKeranjang">
-                            <tr id="rowKosong">
-                                <td colspan="7" style="text-align: center; color: #999; padding: 20px;">Keranjang masih kosong. Ketik Kode Barang!</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                            <label>Uang Tunai Diterima (Rp)</label>
+                            <input type="number" id="jumlahBayar" name="tunaiDiterima" placeholder="Kosongkan jika non-tunai" style="font-size: 18px; font-weight: bold; color: #4ade80;">
+
+                            <input type="hidden" id="idCustomerTerpilih" name="customerId" value=""/>
+                            <input type="hidden" id="totalBayarHidden" name="totalBayar" value="0"/>
+                            <input type="hidden" id="idAkunKasir" name="idAkun" th:value="${session.idAkun != null ? session.idAkun : '1'}"/>
+                            
+                            <button id="lanjutkanPembayaran" type="button" class="btn-bayar" onclick="bukaModalPembayaranFragment()">BAYAR SEKARANG</button>
+                        </form>
+                    </div>
                 </div>
             </div>
 
+            <!-- Master Data Tersembunyi (Tidak berubah logicnya) -->
             <div id="dataMasterBarangTersembunyi" style="display: none;">
                 <table>
                     <tr th:each="b : ${listBarang}" 
@@ -94,56 +131,26 @@
                 </table>
             </div>
 
-            <div class="metode-pembayaran" style="padding: 20px; border-left: 2px solid #ccc;">
-                <h3>💳 PENYELESAIAN TRANSAKSI</h3>
-                <hr>
-                
-                <form id="formTransaksi">
-                    <div style="margin-bottom: 15px;">
-                        <label style="font-weight: bold;">Metode Pembayaran:</label><br>
-                        <select id="selectMetodePembayaran" name="metode" style="width:100%; padding:8px; margin-top:5px;">
-                            <option value="TUNAI">TUNAI (CASH)</option>
-                            <option value="QRIS">QRIS / DEBIT</option>
-                            <option value="TRANSFER">TRANSFER BANK</option>
-                        </select>
-                    </div>
-
-                    <div style="margin-bottom: 15px;">
-                        <label style="font-weight: bold;">Uang Tunai Diterima (Rp):</label><br>
-                        <input type="number" id="jumlahBayar" name="tunaiDiterima"
-                            placeholder="Kosongkan jika non-tunai"
-                            style="width:95%; padding:8px; margin-top:5px; font-size:16px; font-weight:bold;">
-                    </div>
-
-                    <input type="hidden" id="idCustomerTerpilih" name="customerId" value=""/>
-                    <input type="hidden" id="totalBayarHidden" name="totalBayar" value="0"/>
-                    <input type="hidden" id="idAkunKasir" name="idAkun" th:value="${session.idAkun != null ? session.idAkun : '1'}"/>
-                    
-                    <button id="lanjutkanPembayaran" type="button" onclick="bukaModalPembayaranFragment()">👉 LANJUTKAN PEMBAYARAN</button>
-                </form>
-            </div>
-
             <div id="tempatModalPembayaranTimbul"></div>
-         </div>
+        </div>
     </div>
 
 
     <!-- ============================BAGIAN SEMUA MODAL ======================-->
 
-    <!-- -------------- MODAL - CUSTOMER ------------------ -->
     <!-- ----------MODAL - CARI MEMBER--------- -->
     <div id="modalCariMember" class="modal-overlay">
-        <div class="modal-content modal-lebar-member">
-            <h3 style="margin-top: 0;">🔍 Cari Member</h3>
-            <input id="inputanCariMember" type="text" placeholder="Ketik nama member..." onkeyup="filterMemberLokal()" style="width: 100%; padding: 8px; margin-bottom: 15px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;"/>
+        <div class="modal-content-glass modal-lebar-member">
+            <h3>🔍 Cari Member</h3>
+            <input id="inputanCariMember" type="text" placeholder="Ketik nama member..." onkeyup="filterMemberLokal()" class="input-modal"/>
                         
-            <div style="margin-bottom: 15px;">
-                <table style="width: 100%; border-collapse: collapse;">
+            <div style="margin-bottom: 20px; max-height: 300px; overflow-y: auto;">
+                <table style="width: 100%; border-collapse: collapse; color: #fff;">
                     <thead>
-                        <tr style="background: #f1f5f9; border-bottom: 2px solid #e2e8f0;">
-                            <th style="padding: 10px; text-align: left;">Nama</th>
-                            <th style="padding: 10px; text-align: left;">Telepon</th>
-                            <th style="padding: 10px; text-align: center;">Aksi</th>
+                        <tr>
+                            <th style="padding: 10px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.2);">Nama</th>
+                            <th style="padding: 10px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.2);">Telepon</th>
+                            <th style="padding: 10px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.2);">Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="tabelHasilCari">
@@ -151,44 +158,121 @@
                             th:data-id="${c.idCustomer}"
                             th:data-nama="${c.namaCustomer}"
                             th:data-telepon="${c.noTelepon}"> 
-                            <td th:text="${c.namaCustomer}"></td>
-                            <td th:text="${c.noTelepon}"></td>
-                            <td style="padding: 10px; text-align: center;">
-                                <button type="button" class="btnPilihMember">Pilih</button>
+                            <td th:text="${c.namaCustomer}" style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.05);"></td>
+                            <td th:text="${c.noTelepon}" style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.05);"></td>
+                            <td style="padding: 10px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                <button type="button" class="btn-pilih-member btnPilihMember">Pilih</button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
             
-            <button id="btnTutupModalCari" type="button" style="width: 100%; padding: 10px; background: #64748b; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
+            <button id="btnTutupModalCari" type="button" class="btn-close-modal">
                 Tutup
             </button>
         </div>
     </div>
+
     <!-- --------MODAL - TAMBAH MEMBER-------- -->
     <div id="modalTambahMember" class="modal-overlay">
-        <div class="modal-content modal-lebar-tambah">
-            <h3 style="margin-top: 0;">➕ Daftar Member Baru</h3>
+        <div class="modal-content-glass modal-lebar-tambah">
+            <h3>➕ Daftar Member Baru</h3>
             
-            <label style="font-weight: bold; display: block; margin-bottom: 5px;">Nama Member:</label>
-            <input id="inputNamaBaru" type="text" placeholder="Nama lengkap..." style="width: 100%; padding: 8px; margin-bottom: 15px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;"/>
+            <label class="label-modal">Nama Lengkap</label>
+            <input id="inputNamaBaru" type="text" placeholder="Masukkan nama..." class="input-modal"/>
             
-            <label style="font-weight: bold; display: block; margin-bottom: 5px;">No. Telepon:</label>
-            <input id="inputTelpBaru" type="text" placeholder="08xx-xxxx-xxxx" style="width: 100%; padding: 8px; margin-bottom: 20px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;"/>
+            <label class="label-modal">No. Telepon</label>
+            <input id="inputTelpBaru" type="text" placeholder="08xx-xxxx-xxxx" class="input-modal" style="margin-bottom: 25px;"/>
             
             <div style="display: flex; gap: 10px;">
-                <button id="btnSimpanMemberBaru" type="button" style="flex: 1; padding: 10px; background: #22c55e; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
-                    Simpan
+                <button id="btnSimpanMemberBaru" type="button" class="btn-simpan-member">
+                    Simpan Member
                 </button>
-                <button id="btnTutupModalTambah" type="button" style="flex: 1; padding: 10px; background: #ef4444; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
+                <button id="btnTutupModalTambah" type="button" class="btn-batal-member">
                     Batal
                 </button>
             </div>
         </div>
     </div>
 
+    <!-- Custom Alert Notification -->
+    <div id="customAlert" class="custom-alert" style="display: none;">
+        <div class="custom-alert-content">
+            <h3 id="customAlertTitle">🔔 Informasi</h3>
+            <p id="customAlertMessage">Pesan alert di sini</p>
+            <button onclick="closeCustomAlert()">OK, Mengerti</button>
+        </div>
+    </div>
 
     <script th:src="@{/js/penjualan.js}"></script>
+    <script>
+        // Override default alert
+        window.alert = function(message) {
+            document.getElementById('customAlertMessage').innerText = message;
+            document.getElementById('customAlert').style.display = 'flex';
+        };
+        function closeCustomAlert() {
+            document.getElementById('customAlert').style.display = 'none';
+        }
+
+        // Custom Dropdown Logic
+        const inputKode = document.getElementById('inputKodeBarang');
+        const dropdown = document.getElementById('customDropdownBarang');
+        const items = document.querySelectorAll('.dropdown-item');
+
+        inputKode.addEventListener('focus', function() {
+            dropdown.style.display = 'block';
+            filterDropdown(this.value);
+        });
+
+        inputKode.addEventListener('input', function() {
+            dropdown.style.display = 'block';
+            filterDropdown(this.value);
+        });
+
+        document.addEventListener('click', function(e) {
+            if(!e.target.closest('.input-transaksi')) {
+                dropdown.style.display = 'none';
+            }
+        });
+
+        function filterDropdown(keyword) {
+            keyword = keyword.toLowerCase();
+            items.forEach(item => {
+                const text = item.innerText.toLowerCase();
+                if(text.includes(keyword)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        items.forEach(item => {
+            item.addEventListener('click', function() {
+                inputKode.value = this.getAttribute('data-kode');
+                dropdown.style.display = 'none';
+                tambahBarangByKode(); // auto add to cart
+            });
+        });
+    </script>
+
+    <!-- ===================== POPUP NOTA (PERMANEN DI DOM) ===================== -->
+    <div id="overlayNota" class="nota-overlay">
+        <div id="boxNota" class="nota-box">
+            <div id="isiNota" class="nota-content"></div>
+            <div class="nota-actions">
+                <button onclick="cetakNota()" class="btn-save-pdf">
+                    💾 Save as PDF
+                </button>
+                <button onclick="tutupNotaDanReset()" class="btn-close-nota">
+                    ✖ Close
+                </button>
+            </div>
+        </div>
+    </div>
+    <iframe id="iframePrint" style="display:none;"></iframe>
+
 </body>
 </html>
