@@ -1,0 +1,92 @@
+/* logaktivitas.css */
+
+.log-main-data {
+    margin-top: 20px;
+    border: none;
+    background: transparent;
+    padding: 0;
+}
+
+.log-header-desc {
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+.log-table-wrapper {
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(13, 25, 38, 0.6);
+    backdrop-filter: blur(15px);
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.log-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.log-th {
+    background: rgba(0,0,0,0.3);
+    color: #4dc2f8;
+    padding: 15px;
+    text-align: center;
+    border-bottom: 2px solid rgba(77, 194, 248, 0.3);
+}
+
+.log-tr {
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    transition: all 0.2s;
+}
+
+.log-tr:hover {
+    background: rgba(255,255,255,0.05);
+}
+
+.log-td {
+    padding: 15px;
+    color: #fff;
+    text-align: center;
+}
+
+.log-td-time {
+    padding: 15px;
+    color: #cbd5e1;
+    text-align: center;
+}
+
+.log-td-userid {
+    padding: 15px;
+    color: #94a3b8;
+    text-align: center;
+}
+
+.log-badge {
+    background: rgba(255,255,255,0.1);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+}
+
+.log-td-user {
+    padding: 15px;
+    color: #4ade80;
+    font-weight: 500;
+    text-align: center;
+}
+
+.log-td-action {
+    padding: 15px;
+    color: #fff;
+    text-align: left;
+}
+
+.log-empty {
+    text-align: center;
+    color: #ef4444;
+    padding: 40px;
+    font-weight: bold;
+    background: rgba(239, 68, 68, 0.05);
+}

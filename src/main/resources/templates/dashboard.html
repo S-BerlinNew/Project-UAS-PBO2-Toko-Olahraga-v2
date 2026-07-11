@@ -5,6 +5,7 @@
     <title>Dashboard - Toko Olahraga</title>
     <link rel="stylesheet" th:href="@{/css/variables.css}">
     <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
 </head>
 <body>
 
@@ -19,10 +20,10 @@
         <header class="top-navbar">
             <h1 class="page-title">Dashboard</h1>
             
-            <div class="search-bar">
+            <!-- <div class="search-bar">
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
                 <input type="text" placeholder="Search">
-            </div>
+            </div> -->
             
             <div class="navbar-right">
                 <div class="notification-icon">
@@ -59,7 +60,7 @@
             <!-- Card 2: Total Pendapatan -->
             <div class="summary-card success">
                 <div class="summary-icon">
-                    <span style="font-weight: 900; font-size: 24px;">Rp</span>
+                    <span class="rp-icon">Rp</span>
                 </div>
                 <div class="summary-info">
                     <span class="summary-title">Pendapatan Bulan Ini</span>
@@ -118,11 +119,11 @@
                             <td th:text="${b.kodeBarang}">KOD-01</td>
                             <td th:text="${b.namaBarang}">Sepatu Futsal</td>
                             <td>
-                                <span th:text="${b.stok}" th:style="${b.stok < 5} ? 'color: #ef4444; font-weight: bold;' : ''">10</span>
+                                <span th:text="${b.stok}" th:class="${b.stok < 5} ? 'stok-menipis-text' : ''">10</span>
                             </td>
                         </tr>
                         <tr th:if="${#lists.isEmpty(listBarang)}">
-                            <td colspan="3" style="text-align: center; color: #ef4444;">Data kosong</td>
+                            <td colspan="3" class="empty-data-row">Data kosong</td>
                         </tr>
                     </tbody>
                 </table>
@@ -149,7 +150,7 @@
                             <td th:text="${c.noTelepon}">08123456789</td>
                         </tr>
                         <tr th:if="${#lists.isEmpty(listCustomer)}">
-                            <td colspan="3" style="text-align: center; color: #ef4444;">Data kosong</td>
+                            <td colspan="3" class="empty-data-row">Data kosong</td>
                         </tr>
                     </tbody>
                 </table>
@@ -174,11 +175,11 @@
                             <td th:text="${a.username}">admin</td>
                             <td th:text="${a.namaLengkap}">Administrator</td>
                             <td>
-                                <span th:text="${a.role}" style="padding: 4px 8px; border-radius: 4px; background: rgba(77, 194, 248, 0.1); color: var(--color-btn2); font-size: 11px; font-weight: bold;">ADMIN</span>
+                                <span th:text="${a.role}" class="role-badge">ADMIN</span>
                             </td>
                         </tr>
                         <tr th:if="${#lists.isEmpty(listAkun)}">
-                            <td colspan="3" style="text-align: center; color: #ef4444;">Data kosong</td>
+                            <td colspan="3" class="empty-data-row">Data kosong</td>
                         </tr>
                     </tbody>
                 </table>

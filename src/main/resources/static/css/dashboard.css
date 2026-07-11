@@ -1,0 +1,25 @@
+/* dashboard.css */
+
+.stok-menipis-text {
+    color: #ef4444;
+    font-weight: bold;
+}
+
+.empty-data-row {
+    text-align: center;
+    color: #ef4444;
+}
+
+.rp-icon {
+    font-weight: 900;
+    font-size: 24px;
+}
+
+.role-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    background: rgba(77, 194, 248, 0.1);
+    color: var(--color-btn2);
+    font-size: 11px;
+    font-weight: bold;
+}

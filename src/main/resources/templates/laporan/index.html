@@ -5,148 +5,7 @@
     <meta charset="UTF-8">
     <title>Laporan - Toko Olahraga</title>
     <link rel="stylesheet" th:href="@{/css/main.css}">
-    <style>
-        /* Modern Glassmorphism Adjustments */
-        .glass-filter-box {
-            background: rgba(13, 25, 38, 0.6);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            margin-bottom: 25px;
-        }
-
-        .dark-input {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(77, 194, 248, 0.3);
-            color: #fff;
-            border-radius: 6px;
-            padding: 10px;
-            outline: none;
-            transition: all 0.3s ease;
-            color-scheme: dark;
-        }
-
-        .dark-input:focus {
-            border-color: #4dc2f8;
-            box-shadow: 0 0 10px rgba(77, 194, 248, 0.2);
-        }
-
-        /* Color Scheme for Inputs */
-        input[type="date"]::-webkit-calendar-picker-indicator {
-            cursor: pointer;
-        }
-
-        select.dark-input {
-            appearance: none;
-            -webkit-appearance: none;
-            background-image: url('data:image/svg+xml;charset=UTF-8,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%234dc2f8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3E%3Cpolyline points="6 9 12 15 18 9"%3E%3C/polyline%3E%3C/svg%3E');
-            background-repeat: no-repeat;
-            background-position: right 15px center;
-            background-size: 16px;
-            padding-right: 40px;
-            cursor: pointer;
-        }
-
-        select.dark-input option {
-            background: #0d1926;
-            color: #fff;
-        }
-
-        /* Summary Cards Glowing Effect */
-        .card-omset {
-            flex: 1;
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(21, 128, 61, 0.25) 100%);
-            border: 1px solid rgba(34, 197, 94, 0.4);
-            border-radius: 16px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.15);
-            transition: all 0.3s ease;
-        }
-
-        .card-omset:hover {
-            box-shadow: 0 15px 40px rgba(34, 197, 94, 0.25);
-        }
-
-        .card-transaksi {
-            flex: 1;
-            background: linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(126, 34, 206, 0.25) 100%);
-            border: 1px solid rgba(168, 85, 247, 0.4);
-            border-radius: 16px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(168, 85, 247, 0.15);
-            transition: all 0.3s ease;
-        }
-
-        .card-transaksi:hover {
-            box-shadow: 0 15px 40px rgba(168, 85, 247, 0.25);
-        }
-
-        /* Print Media Query */
-        @media print {
-            body {
-                background: white !important;
-                color: black !important;
-            }
-
-            aside,
-            .glass-filter-box,
-            .btn-cetak,
-            .summary-cards {
-                display: none !important;
-                /* Hide sidebar, filter, buttons, cards on print */
-            }
-
-            .dashboard-wrapper {
-                display: block !important;
-                background: white !important;
-            }
-
-            .main-content {
-                width: 100% !important;
-                margin: 0 !important;
-                padding: 0 !important;
-            }
-
-            .kop-surat {
-                display: block !important;
-                text-align: center;
-                margin-bottom: 20px;
-                color: black;
-            }
-
-            .kop-surat h2 {
-                color: black !important;
-                margin: 10px 0 5px 0;
-            }
-
-            .kop-surat p {
-                margin: 0;
-                color: #333;
-            }
-
-            table {
-                width: 100% !important;
-                border-collapse: collapse !important;
-            }
-
-            table th,
-            table td {
-                border: 1px solid black !important;
-                background: white !important;
-                color: black !important;
-                padding: 8px !important;
-            }
-        }
-
-        /* Hide Kop Surat on Screen */
-        @media screen {
-            .kop-surat {
-                display: none;
-            }
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/laporan.css}">
 </head>
 
 <body>
@@ -167,7 +26,7 @@
                 <h1 style="color: #fff; margin: 0; font-size: 24px;">Laporan Transaksi</h1>
                 <button type="button" class="btn-cetak" onclick="window.print()"
                     style="padding: 10px 20px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; border: none; font-weight: bold; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4); transition: all 0.3s;">
-                    🖨️ Cetak Laporan (PDF)
+                    Cetak Laporan (PDF)
                 </button>
             </div>
 

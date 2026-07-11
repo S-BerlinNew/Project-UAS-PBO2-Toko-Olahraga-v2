@@ -7,6 +7,7 @@
     <link rel="icon" type="image/png" th:href="@{/assets/logo-square.png}"/>
     <link rel="stylesheet" th:href="@{/css/variables.css}">
     <link rel="stylesheet" th:href="@{/css/main.css(v=2)}">
+    <link rel="stylesheet" th:href="@{/css/logaktivitas.css}">
 </head>
 <body>
     <div class="dashboard-wrapper">
@@ -36,30 +37,40 @@
             </header>
 
             <!-- Table Data Log -->
-            <div class="main-data" style="margin-top: 20px;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID Log</th>
-                            <th>Waktu</th>
-                            <th>User ID</th>
-                            <th>Nama Pengguna</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="log: ${listLog}">
-                            <td th:text="${log.idLog}"></td>
-                            <td th:text="${#temporals.format(log.waktu, 'dd MMM yyyy HH:mm:ss')}"></td>
-                            <td th:text="${log.akun != null ? log.akun.idAkun : '-'}"></td>
-                            <td th:text="${log.akun != null ? log.akun.namaLengkap : 'System'}"></td>
-                            <td th:text="${log.aksi}"></td>
-                        </tr>
-                        <tr th:if="${#lists.isEmpty(listLog)}">
-                            <td colspan="5" class="empty-msg" style="text-align: center; color: rgba(255,255,255,0.6); padding: 30px;">Belum ada riwayat aktivitas!</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="main-data log-main-data">
+                <div class="header-actions" style="margin-bottom: 15px;">
+                    <p class="log-header-desc">Menampilkan semua riwayat aktivitas dari pengguna dalam sistem.</p>
+                </div>
+                
+                <div class="table-wrapper-glass log-table-wrapper">
+                    <table class="log-table">
+                        <thead>
+                            <tr>
+                                <th class="log-th" style="width: 5%;">No.</th>
+                                <th class="log-th" style="width: 20%;">Waktu</th>
+                                <th class="log-th" style="width: 15%;">User ID</th>
+                                <th class="log-th" style="width: 25%;">Nama Pengguna</th>
+                                <th class="log-th" style="width: 35%;">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="log, iterStat : ${listLog}" class="log-tr">
+                                <td class="log-td" th:text="${iterStat.count}"></td>
+                                <td class="log-td-time" th:text="${#temporals.format(log.waktu, 'dd MMM yyyy HH:mm:ss')}"></td>
+                                <td class="log-td-userid">
+                                    <span class="log-badge" th:text="${log.akun != null ? log.akun.idAkun : '-'}"></span>
+                                </td>
+                                <td class="log-td-user" th:text="${log.akun != null ? log.akun.namaLengkap : 'System'}"></td>
+                                <td class="log-td-action">
+                                    <span th:text="${log.aksi}"></span>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(listLog)}">
+                                <td colspan="5" class="log-empty">Belum ada riwayat aktivitas!</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </main>
     </div>
