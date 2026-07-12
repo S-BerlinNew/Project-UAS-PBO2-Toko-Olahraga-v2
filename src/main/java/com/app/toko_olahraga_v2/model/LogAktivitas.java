@@ -15,6 +15,7 @@ public class LogAktivitas {
     private int idLog;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_akun")
     private Akun akun;
 
     private LocalDateTime waktu;
