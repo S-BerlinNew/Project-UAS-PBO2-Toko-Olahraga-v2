@@ -18,17 +18,18 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class DashboardController {
 
-    @Autowired
-    private BarangRepository barangRepository;
+    private final BarangRepository barangRepository;
+    private final CustomerRepository customerRepository;
+    private final PenjualanRepository penjualanRepository;
+    private final AkunRepository akunRepository;
 
-    @Autowired
-    private CustomerRepository customerRepository;
+    public DashboardController(BarangRepository barangRepository, CustomerRepository customerRepository, PenjualanRepository penjualanRepository, AkunRepository akunRepository) {
+        this.barangRepository = barangRepository;
+        this.customerRepository = customerRepository;
+        this.penjualanRepository = penjualanRepository;
+        this.akunRepository = akunRepository;
+    }   
 
-    @Autowired
-    private PenjualanRepository penjualanRepository;
-
-    @Autowired
-    private AkunRepository akunRepository;
 
     @GetMapping("/dashboard")
     public String dashboard(HttpSession session, Model model) {

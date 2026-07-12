@@ -65,7 +65,6 @@ public class CustomerService {
     }
 
     // ======= FUNGSI GENERATE KODE CUSTOMER OTOMATIS =======
-    // Fungsi ini bakal bikin kode format: CS-20260615-001 (contohnya)
     public String generateKodeCustomerOtomatis() {
         // Ambil total data customer sekarang untuk base nomor urut
         long totalCustomer = customerRepository.count();
@@ -73,8 +72,7 @@ public class CustomerService {
         // Naikin 1 angka buat customer baru
         long nomorUrut = totalCustomer + 1;
         
-        // Bikin format string: CS- diikutin nomor urut (contoh: CS-005)
-        // %03d artinya nomornya bakal ada padding 3 digit (001, 002, dst)
+        // format string: CS- diikutin nomor urut (contoh: CS-005)
         return String.format("CS-%03d", nomorUrut);
     }
     

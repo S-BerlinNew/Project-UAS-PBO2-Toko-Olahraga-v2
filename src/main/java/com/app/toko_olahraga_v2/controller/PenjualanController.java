@@ -49,21 +49,13 @@ public class PenjualanController {
     public String index(Model model) {
         // Ambil data semua customer dari database untuk keperluan modal cari member
         List<Customer> customers = customerService.getAll();
-
-        // Oper list customer ke Thymeleaf dengan nama "listCustomer"
+        
         model.addAttribute("listCustomer", customers);
-
-        // Oper list barang thymeleaf dengan nama "listBarang"
         model.addAttribute("listBarang", barangService.getAllAktif());
-
-        // Sediakan objek Penjualan kosong baru agar form th:object="${penjualan}" tidak
-        // meledak
         model.addAttribute("penjualan", new Penjualan());
 
-        // Set nilai default total bayar di box tampilan depan
         model.addAttribute("totalBayar", 0);
 
-        // Arahkan ke file templates/penjualan/index.html
         return "penjualan/index";
     }
 
@@ -72,8 +64,7 @@ public class PenjualanController {
     public String prosesBayar(@ModelAttribute("penjualan") Penjualan penjualan, Model model) {
         try {
             // Tempat penampungan keranjang belanja sementara
-            // Catatan: Nanti listKeranjang ini datanya akan diparsing dari input hidden
-            // jsonKeranjang
+            // Catatan: Nanti listKeranjang ini datanya akan diparsing dari input hidden jsonKeranjang
             List<DetailPenjualan> listKeranjang = new ArrayList<>();
 
             // Eksekusi logika transaksi di service yang kita perbaiki tadi
@@ -87,14 +78,10 @@ public class PenjualanController {
             return "fragments/pembayaran";
 
         } catch (Exception e) {
-            // Jika transaksi gagal (misal uang kurang atau stok habis), kembalikan ke
-            // halaman kasir tanpa bikin error 500
-            // Suapi ulang data yang dibutuhkan oleh Thymeleaf index.html biar gak null
-            // pointer
+            // Jika transaksi gagal (misal uang kurang atau stok habis), kembalikan ke halaman kasir tanpa bikin error 500
             model.addAttribute("listCustomer", customerService.getAll());
             model.addAttribute("penjualan", penjualan); // Kembalikan data form yang sempat diinput kasir
 
-            // Kirim pesan errornya agar bisa muncul di layar berupa alert/text
             model.addAttribute("error", e.getMessage());
 
             return "penjualan/index";
@@ -170,7 +157,7 @@ public class PenjualanController {
                     detail.setQty(itemDto.qty());
                     detail.setJumlah(itemDto.qty()); // Set jumlah = qty untuk menjaga integritas database
 
-                    // Diskon disimpan sebagai Rupiah absolut dalam PenjualanService
+                    // Diskon disimpan sebagai Rupiah dalam PenjualanService
                     double diskonRupiah = (itemDto.hargaJual() * itemDto.qty()) * (itemDto.diskonPersen() / 100.0);
                     detail.setDiskon(diskonRupiah);
                     detail.setHargaJual(itemDto.hargaJual());
