@@ -460,7 +460,7 @@ function renderNota(data, items, metode, totalBayar, tunaiDiterima) {
     document.getElementById("isiNota").innerHTML = `
         <div style="text-align:center; margin-bottom:12px;">
             <div style="font-size:16px; font-weight:bold; letter-spacing:1px;">Toko Olahraga</div>
-            <img src="/assets/logo.png" alt="Logo" style="height:60px; margin:6px auto; display:block;">
+            <img src="/assets/logo-baru.png" alt="Logo" style="height:60px; margin:6px auto; display:block;">
             <div style="font-size:12px; color:#555;">Jl. Ketapang No 100, Kota Pontianak</div>
             <div style="font-size:12px; color:#555;">Telepon: 08911911911</div>
         </div>
