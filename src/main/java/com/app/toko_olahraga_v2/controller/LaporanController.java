@@ -14,7 +14,6 @@ public class LaporanController {
 
     private final LaporanService laporanService;
 
-    // Bersihkan PenjualanService yang tidak terpakai agar constructor aman
     public LaporanController(LaporanService laporanService) {
         this.laporanService = laporanService;
     }
@@ -34,15 +33,13 @@ public class LaporanController {
         if ("asc".equalsIgnoreCase(sort)) {
             listPenjualan.sort((p1, p2) -> p1.getTanggal().compareTo(p2.getTanggal()));
         } else {
-            // desc by default
             listPenjualan.sort((p1, p2) -> p2.getTanggal().compareTo(p1.getTanggal()));
         }
 
         model.addAttribute("listPenjualan", listPenjualan);
         model.addAttribute("totalOmset", laporanService.hitungTotalOmset(listPenjualan));
 
-        // Kirim balik parameter ke HTML agar form input tidak ter-reset otomatis
-        // setelah submit
+        // Kirim balik parameter ke HTML agar form input tidak ter-reset otomatis setelah submit
         model.addAttribute("tglMulaiParam", tglMulai);
         model.addAttribute("tglSelesaiParam", tglSelesai);
         model.addAttribute("metodeParam", metode);

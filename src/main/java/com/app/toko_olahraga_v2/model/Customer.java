@@ -9,9 +9,17 @@ public class Customer {
     //atribut
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Column(name = "id_pelanggan")
     private Integer idCustomer;
+
+    @Column(name = "kode_pelanggan")
     private String kodeCustomer;
+
+    @Column(name = "nama_pelanggan")
     private String namaCustomer;
+
+    @Column(name = "no_telepon")
     private String noTelepon;
 
     //kontruktor

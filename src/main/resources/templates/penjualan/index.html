@@ -11,20 +11,20 @@
     <div class="kasir">
         <div class="kasir-wrapper">
             <div class="head-kasir">
-                <div><b>🏀 TOKO OLAHRAGA V2 - KASIR</b></div>
+                <div><b>TOKO OLAHRAGA V2 - KASIR</b></div>
                 <div><a th:href="@{/dashboard}">KELUAR</a></div>
             </div>
 
             <div class="info-row">
                 <div class="info-card glass-panel" style="padding: 15px;">
-                    <h4>👨‍💼 Kasir Bertugas</h4>
+                    <h4>Kasir Bertugas</h4>
                     <p style="font-weight: bold; color: #fff;"><span th:text="${session.loggedInUser != null ? session.loggedInUser : 'Admin'}"></span></p>
                 </div>
                 
                 <div class="info-card glass-panel" style="padding: 15px; grid-column: span 2;">
                     <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                         <div>
-                            <h4>👑 Status Member</h4>
+                            <h4>Status Member</h4>
                             <div id="sectionNonMember">
                                 <p class="text-gray">Umum (Non-Member)</p>
                             </div>
@@ -141,7 +141,7 @@
     <!-- ----------MODAL - CARI MEMBER--------- -->
     <div id="modalCariMember" class="modal-overlay">
         <div class="modal-content-glass modal-lebar-member">
-            <h3>🔍 Cari Member</h3>
+            <h3>Cari Member</h3>
             <input id="inputanCariMember" type="text" placeholder="Ketik nama member..." onkeyup="filterMemberLokal()" class="input-modal"/>
                         
             <div style="margin-bottom: 20px; max-height: 300px; overflow-y: auto;">
@@ -177,7 +177,7 @@
     <!-- --------MODAL - TAMBAH MEMBER-------- -->
     <div id="modalTambahMember" class="modal-overlay">
         <div class="modal-content-glass modal-lebar-tambah">
-            <h3>➕ Daftar Member Baru</h3>
+            <h3>Daftar Member Baru</h3>
             
             <label class="label-modal">Nama Lengkap</label>
             <input id="inputNamaBaru" type="text" placeholder="Masukkan nama..." class="input-modal"/>
@@ -199,7 +199,7 @@
     <!-- Custom Alert Notification -->
     <div id="customAlert" class="custom-alert" style="display: none;">
         <div class="custom-alert-content">
-            <h3 id="customAlertTitle">🔔 Informasi</h3>
+            <h3 id="customAlertTitle">Informasi</h3>
             <p id="customAlertMessage">Pesan alert di sini</p>
             <button onclick="closeCustomAlert()">OK, Mengerti</button>
         </div>
