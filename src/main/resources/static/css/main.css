@@ -10,11 +10,12 @@
 body {
     background-color: var(--color-bg);
     color: var(--color-text-3);
+    overflow: hidden;
 }
 
 .dashboard-wrapper {
     display: flex;
-    min-height: 100vh;
+    height: 100vh;
 }
 
 .sidebar {
@@ -27,6 +28,9 @@ body {
     flex-direction: column;
     padding: 24px 0 16px;
     box-shadow: 2px 0 15px rgba(0, 0, 0, 0.2);
+    height: 100vh;
+    flex-shrink: 0;
+    overflow-y: auto;
 }
 
 .sidebar-brand {
@@ -88,6 +92,9 @@ body {
     font-weight: 500;
     transition: all 0.3s ease;
     border-right: 3px solid transparent;
+
+    position: relative;
+    z-index: 10;
 }
 
 .nav-menu li a:hover,
@@ -146,6 +153,8 @@ body {
     background: var(--color-bg);
     display: flex;
     flex-direction: column;
+    height: 100vh;
+    overflow-y: auto;
 }
 
 /* ======== TOP NAVBAR ========= */
@@ -1240,3 +1249,5 @@ body {
         grid-template-columns: 1fr;
     }
 }
+
+
