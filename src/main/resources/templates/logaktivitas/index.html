@@ -44,25 +44,21 @@
                             <tr>
                                 <th class="log-th" style="width: 5%;">No.</th>
                                 <th class="log-th" style="width: 20%;">Waktu</th>
-                                <th class="log-th" style="width: 15%;">User ID</th>
                                 <th class="log-th" style="width: 25%;">Nama Pengguna</th>
-                                <th class="log-th" style="width: 35%;">Aksi</th>
+                                <th class="log-th" style="width: 50%;">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr th:each="log, iterStat : ${listLog}" class="log-tr">
                                 <td class="log-td" th:text="${iterStat.count}"></td>
                                 <td class="log-td-time" th:text="${#temporals.format(log.waktu, 'dd MMM yyyy HH:mm:ss')}"></td>
-                                <td class="log-td-userid">
-                                    <span class="log-badge" th:text="${log.akun != null ? log.akun.idAkun : '-'}"></span>
-                                </td>
                                 <td class="log-td-user" th:text="${log.akun != null ? log.akun.namaLengkap : 'System'}"></td>
                                 <td class="log-td-action">
                                     <span th:text="${log.aksi}"></span>
                                 </td>
                             </tr>
                             <tr th:if="${#lists.isEmpty(listLog)}">
-                                <td colspan="5" class="log-empty">Belum ada riwayat aktivitas!</td>
+                                <td colspan="4" class="log-empty">Belum ada riwayat aktivitas!</td>
                             </tr>
                         </tbody>
                     </table>
